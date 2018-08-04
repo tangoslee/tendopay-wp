@@ -30,7 +30,7 @@ class Endpoint_Caller {
 	 *
 	 * @return Response response from the API call
 	 */
-	public function do_call( $url, array $data ) {
+	public function do_call( $url, array $data, $type = 'POST' ) {
 		$data = wp_parse_args( $data, [
 			'tendo_pay_merchant_id' => $this->tendopay_merchant_id,
 		] );

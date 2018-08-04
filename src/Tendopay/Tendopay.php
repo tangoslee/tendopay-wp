@@ -9,6 +9,7 @@
 
 namespace Tendopay;
 
+use Tendopay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
 class Tendopay {
@@ -25,23 +26,43 @@ class Tendopay {
 	public function register_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init_gateway' ) );
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
-
-		// add endpoint for RedirectUrl
 		add_action( 'plugins_loaded', array( Url_Rewriter::class, 'get_instance' ) );
 		add_action( 'admin_post_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 		add_action( 'admin_post_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 	}
 
 	function handle_redirect_from_tendopay() {
-		$order     = WC_Order_Factory::get_order( (int) $_GET['order_id'] );
-		$order_key = $_GET['key'];
+		$order     = WC_Order_Factory::get_order( (int) $_REQUEST['customer_reference_1'] );
+		$order_key = $_REQUEST['customer_reference_2'];
 
-		// todo implementation
+		if ( $order->get_order_key() !== $order_key ) {
+			wp_die( new \WP_Error( 'wrong-order-key', 'Wrong order key provided' ),
+				__( 'Wrong order key provided', 'tendopay' ), 403 );
+		}
 
-		// todo set the same status as for paypal payment
-		// $order->update_status( 'on-hold', __( 'Awaiting feedback from Tendopay', 'tendopay' ) );
-		// wc_reduce_stock_levels( $order->get_id() );
-		// $woocommerce->cart->empty_cart();
+		$tendo_pay_merchant_id       = $_REQUEST['tendo_pay_merchant_id'];
+		$local_tendo_pay_merchant_id = '';
+		if ( $tendo_pay_merchant_id !== $local_tendo_pay_merchant_id ) {
+			wp_die( new \WP_Error( 'wrong-merchant-id', 'Malformed payload' ),
+				__( 'Malformed payload', 'tendopay' ), 403 );
+		}
+
+		try {
+			$verification      = new Verification_Endpoint();
+			$payment_completed = $verification->verify_payment( $order, $_REQUEST );
+		} catch ( \Exception $exception ) {
+			wp_die( new \WP_Error( 'tendopay-integration-error', 'Could not communicate with Tendopay properly' ),
+				__( 'Could not communicate with Tendopay properly', 'tendopay' ), 403 );
+		}
+
+		if ( $payment_completed ) {
+			$order->payment_complete();
+			wp_redirect( $order->get_checkout_order_received_url() );
+		} else {
+			wp_redirect( $order->get_checkout_payment_url() );
+		}
+
+		exit;
 	}
 
 
