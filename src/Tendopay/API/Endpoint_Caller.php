@@ -41,8 +41,6 @@ class Endpoint_Caller {
 
 		$data['hash'] = $this->hash_calculator->calculate( $data );
 
-		error_log( "Endpoint_Caller doing call: " . json_encode( $data ) );
-
 		// todo do the actuall call
 		return new Response( 200, 'd5d11523ab317848ddcd943c2bb467635866dff8b504efe65cae42a21548ef62' );
 	}
