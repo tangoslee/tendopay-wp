@@ -15,8 +15,16 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 if ( ! class_exists( 'Tendopay' ) ) {
 
-	include_once "src/Tendopay/UrlRewriter.php";
 	include_once "src/Tendopay/Tendopay.php";
+	include_once "src/Tendopay/Url_Rewriter.php";
+	include_once "src/Tendopay/Woocommerce_Order_Retriever.php";
+	include_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
+	include_once "src/Tendopay/API/Hash_Calculator.php";
+	include_once "src/Tendopay/API/Description_Endpoint.php";
+	include_once "src/Tendopay/API/Authorization_Endpoint.php";
+	include_once "src/Tendopay/API/Endpoint_Caller.php";
+	include_once "src/Tendopay/API/Response.php";
+	include_once "src/Tendopay/API/Verification_Endpoint.php";
 
 	/**
 	 * The main function responsible for plugin's initialization.

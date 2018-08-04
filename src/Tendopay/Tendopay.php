@@ -27,7 +27,7 @@ class Tendopay {
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
 
 		// add endpoint for RedirectUrl
-		add_action( 'plugins_loaded', array( 'Tendopay_Rewriter', 'get_instance' ) );
+		add_action( 'plugins_loaded', array( Url_Rewriter::class, 'get_instance' ) );
 		add_action( 'admin_post_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 		add_action( 'admin_post_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 	}
