@@ -26,8 +26,6 @@ class Authorization_Endpoint {
 		$this->order_id  = $order->get_id();
 		$this->order_key = $order->get_order_key();
 		$this->amount    = $order->get_total();
-
-		error_log( "init authorization endpoint: [ {$this->order_id}, {$this->order_key}, {$this->amount} ]" );
 	}
 
 	/**
@@ -45,8 +43,6 @@ class Authorization_Endpoint {
 			error_log( 'Code is not 200 or body is empty' );
 			throw new TendoPay_Integration_Exception( __( 'Could not communicate with TendoPay', 'tendopay' ) );
 		}
-
-		error_log( 'returning response' );
 
 		return $response->get_body();
 	}

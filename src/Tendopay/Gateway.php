@@ -41,31 +41,32 @@ class Gateway extends WC_Payment_Gateway {
 
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'enabled'            => array(
+			'enabled'               => array(
 				'title'   => __( 'Enable/Disable', 'tendopay' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable Tendopay Integration', 'tendopay' ),
 				'default' => 'yes'
 			),
-			'method_title'       => array(
-				'title'       => __( 'Tendopay ID', 'tendopay' ),
+			'method_title'          => array(
+				'title'       => __( 'Payment gateway title', 'tendopay' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'tendopay' ),
 				'default'     => __( 'Pay with Tendopay', 'tendopay' ),
 				'desc_tip'    => true,
 			),
-			'method_description' => array(
+			'method_description'    => array(
 				'title'       => __( 'Payment method description', 'tendopay' ),
 				'description' => __( 'Additional information displayed to the customer after selecting Tendopay method', 'tendopay' ),
 				'type'        => 'textarea',
-				'default'     => ''
+				'default'     => '',
+				'desc_tip'    => true,
 			),
-			'tendo_pay_id'       => array(
-				'title'   => __( 'Tendo Pay ID', 'tendopay' ),
+			'tendo_pay_merchant_id' => array(
+				'title'   => __( 'Tendo Pay Merchant ID', 'tendopay' ),
 				'type'    => 'text',
 				'default' => ''
 			),
-			'tendo_secret'       => array(
+			'tendo_secret'          => array(
 				'title'   => __( 'Secret', 'tendopay' ),
 				'type'    => 'password',
 				'default' => ''
@@ -96,11 +97,11 @@ class Gateway extends WC_Payment_Gateway {
 			'customer_reference_1'  => $order->get_id(),
 			'customer_reference_2'  => $order->get_order_key(),
 			'redirect_url'          => add_query_arg( [ 'key' => 'val' ], get_site_url( get_current_blog_id(), 'tendopay-result' ) ),
-			'tendo_pay_merchant_id' => '', // todo bind tendo pay merchant id
+			'tendo_pay_merchant_id' => $this->get_option( 'tendo_pay_merchant_id' ),
 			'vendor'                => get_bloginfo( 'blogname' )
 		];
 
-		$hash_calc             = new Hash_Calculator( '' );
+		$hash_calc             = new Hash_Calculator( $this->get_option( 'tendo_secret' ) );
 		$redirect_args_hash    = $hash_calc->calculate( $redirect_args );
 		$redirect_args['hash'] = $redirect_args_hash;
 

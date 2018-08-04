@@ -55,10 +55,7 @@ class Description_Endpoint {
 		$response = new Response( 204, $response->get_body() );
 
 		if ( $response->get_code() !== 204 ) {
-			error_log( "didn't get 204 after sending description" );
 			throw new TendoPay_Integration_Exception( "Could not communicate with TendoPay" );
 		}
-
-		error_log( "got 204 after sending description" );
 	}
 }

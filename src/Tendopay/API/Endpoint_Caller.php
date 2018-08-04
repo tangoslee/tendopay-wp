@@ -9,6 +9,8 @@
 namespace Tendopay\API;
 
 
+use Tendopay\Gateway;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
@@ -18,9 +20,11 @@ class Endpoint_Caller {
 	private $hash_calculator;
 
 	public function __construct() {
+		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
+
 		// initialize parameters, etc
-		$this->tendopay_merchant_id = '';
-		$this->secret               = '';
+		$this->tendopay_merchant_id = $gateway_options['tendo_pay_merchant_id'];
+		$this->secret               = $gateway_options['tendo_secret'];
 		$this->hash_calculator      = new Hash_Calculator( $this->secret );
 	}
 

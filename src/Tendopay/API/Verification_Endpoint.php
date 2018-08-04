@@ -11,6 +11,7 @@ namespace Tendopay\API;
 
 use InvalidArgumentException;
 use Tendopay\Exceptions\TendoPay_Integration_Exception;
+use Tendopay\Gateway;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -22,8 +23,8 @@ class Verification_Endpoint {
 	public function verify_payment( \WC_Order $order, array $data ) {
 		ksort( $data );
 
-		$secret          = '';
-		$hash_calculator = new Hash_Calculator( $secret );
+		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
+		$hash_calculator = new Hash_Calculator( $gateway_options['tendo_secret'] );
 
 		$hash = $data['hash'];
 		error_log( $hash_calculator->calculate( $data ) );
@@ -40,7 +41,7 @@ class Verification_Endpoint {
 			'customer_reference_1'         => $order->get_id(),
 			'customer_reference_2'         => $order->get_order_key(),
 			'disposition'                  => $disposition,
-			'tendo_pay_merchant_id'        => '',
+			'tendo_pay_merchant_id'        => $gateway_options['tendo_pay_merchant_id'],
 			'tendo_pay_transaction_number' => $tendo_pay_transaction_number,
 			'verification_token'           => $verification_token
 		];
