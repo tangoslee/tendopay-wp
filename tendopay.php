@@ -8,12 +8,15 @@ Author URI:  http://www.treevert.com/
 License:     GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
+
+use Tendopay\Tendopay;
+
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 if ( ! class_exists( 'Tendopay' ) ) {
 
-	include_once "src/class-tendopay-rewriter.php";
-	include_once "src/class-tendopay.php";
+	include_once "src/Tendopay/UrlRewriter.php";
+	include_once "src/Tendopay/Tendopay.php";
 
 	/**
 	 * The main function responsible for plugin's initialization.

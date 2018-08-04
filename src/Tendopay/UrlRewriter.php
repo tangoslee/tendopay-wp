@@ -7,7 +7,7 @@
  * Time: 20:26
  */
 if ( ! class_exists( 'Tendopay_Rewriter' ) ) {
-	class Tendopay_Rewriter {
+	class UrlRewriter {
 		private static $instance;
 		private $patterns = array(
 			'tendopay-result' => 'tendopay-result'
@@ -18,12 +18,12 @@ if ( ! class_exists( 'Tendopay_Rewriter' ) ) {
 		}
 
 		public static function get_instance() {
-			if ( null == Tendopay_Rewriter::$instance ) {
-				Tendopay_Rewriter::$instance = new Tendopay_Rewriter();
-				add_action( 'init', array( Tendopay_Rewriter::$instance, "add_rules" ) );
+			if ( null == self::$instance ) {
+				self::$instance = new self();
+				add_action( 'init', array( self::$instance, "add_rules" ) );
 			}
 
-			return Tendopay_Rewriter::$instance;
+			return self::$instance;
 		}
 
 		public function add_rules() {
