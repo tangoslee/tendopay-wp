@@ -87,4 +87,15 @@ class Tendopay {
 	public function init_gateway() {
 		include_once dirname( __FILE__ ) . "/Gateway.php";
 	}
+
+	public static function no_woocommerce_admin_notice() {
+		?>
+        <div class="notice notice-warning">
+            <p><?php
+				_e( '<strong>Tendopay</strong> requires <strong>WooCommerce</strong> plugin enabled.',
+					'tendopay' );
+				?></p>
+        </div>
+		<?php
+	}
 }

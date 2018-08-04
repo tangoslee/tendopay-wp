@@ -13,7 +13,8 @@ use Tendopay\Tendopay;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-if ( ! class_exists( 'Tendopay' ) ) {
+if ( ! defined( 'TENDOPAY' ) ) {
+	define( 'TENDOPAY', true );
 
 	include_once "src/Tendopay/Tendopay.php";
 	include_once "src/Tendopay/Url_Rewriter.php";
@@ -44,6 +45,10 @@ if ( ! class_exists( 'Tendopay' ) ) {
 	 * Initialize.
 	 */
 
-	tendopay();
-
+	if ( in_array( 'woocommerce/woocommerce.php',
+		apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+		tendopay();
+	} else {
+		add_action( 'admin_notices', [ Tendopay::class, 'no_woocommerce_admin_notice' ] );
+	}
 }
