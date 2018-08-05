@@ -18,8 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Verification_Endpoint {
-	const ENDPOINT_URL = 'https://tendopay.com/payment/verification';
-
 	public function verify_payment( \WC_Order $order, array $data ) {
 		ksort( $data );
 
@@ -47,7 +45,7 @@ class Verification_Endpoint {
 		];
 
 		$endpoint_caller = new Endpoint_Caller();
-		$response        = $endpoint_caller->do_call( self::ENDPOINT_URL, $verification_data, 'GET' );
+		$response        = $endpoint_caller->do_call( Tendopay_API::get_verification_endpoint_url(), $verification_data, 'GET' );
 
 		// todo remove below line when endpoint calls are ready for test or prod
 		$response = new Response( $response->get_code(), '{"status":"success"}' );

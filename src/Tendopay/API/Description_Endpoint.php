@@ -16,8 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Description_Endpoint {
-	const ENDPOINT_URL = 'https://tendopay.com/payment/description';
-
 	private $authorization_token;
 	private $order_id;
 	private $order_key;
@@ -44,7 +42,7 @@ class Description_Endpoint {
 		}
 
 		$caller   = new Endpoint_Caller();
-		$response = $caller->do_call( self::ENDPOINT_URL, [
+		$response = $caller->do_call( Tendopay_API::get_description_endpoint_url(), [
 			'authorisation_token'  => $this->authorization_token,
 			'customer_reference_1' => $this->order_id,
 			'customer_reference_2' => $this->order_key,

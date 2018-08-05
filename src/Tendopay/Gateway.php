@@ -11,13 +11,12 @@ namespace Tendopay;
 use Tendopay\API\Authorization_Endpoint;
 use Tendopay\API\Description_Endpoint;
 use Tendopay\API\Hash_Calculator;
+use Tendopay\API\Tendopay_API;
 use WC_Data_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
 
 class Gateway extends WC_Payment_Gateway {
-	const TENDOPAY_URL = 'https://tendopay.example.co/make/payment';
-	const TENDOPAY_VIEW_URL_PATTERN = 'https://tendopay.example.co/view/transaction/%s';
 	const GATEWAY_ID = 'tendopay';
 
 	function __construct() {
@@ -31,7 +30,7 @@ class Gateway extends WC_Payment_Gateway {
 		$this->method_title = $this->get_option( 'method_title' );
 		$this->description  = $this->get_option( 'method_description' );
 
-		$this->view_transaction_url = self::TENDOPAY_VIEW_URL_PATTERN;
+		$this->view_transaction_url = Tendopay_API::get_view_url_pattern();
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
 			$this,
@@ -112,7 +111,7 @@ class Gateway extends WC_Payment_Gateway {
 
 		$redirect_args = urlencode_deep( $redirect_args );
 
-		$redirect_url = add_query_arg( $redirect_args, self::TENDOPAY_URL );
+		$redirect_url = add_query_arg( $redirect_args, Tendopay_API::get_redirect_url() );
 
 		return array(
 			'result'   => 'success',

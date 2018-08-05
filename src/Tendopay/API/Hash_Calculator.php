@@ -14,8 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Hash_Calculator {
-	const HASH_ALGO = 'sha256';
-
 	private $hash_keys_exclusion_list = [ 'hash' ];
 	private $secret;
 
@@ -41,6 +39,6 @@ class Hash_Calculator {
 
 		$message = join( "", $data );
 
-		return hash_hmac( self::HASH_ALGO, $message, $this->secret, false );
+		return hash_hmac( Tendopay_API::get_hash_algorithm(), $message, $this->secret, false );
 	}
 }

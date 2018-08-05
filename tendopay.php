@@ -20,6 +20,7 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	include_once "src/Tendopay/Url_Rewriter.php";
 	include_once "src/Tendopay/Woocommerce_Order_Retriever.php";
 	include_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
+	include_once "src/Tendopay/API/Tendopay_API.php";
 	include_once "src/Tendopay/API/Hash_Calculator.php";
 	include_once "src/Tendopay/API/Description_Endpoint.php";
 	include_once "src/Tendopay/API/Authorization_Endpoint.php";
