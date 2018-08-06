@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: robertklodzinski
+Contributors: tendopay, robertklodzinski
 Tags: woocommerce, payment, gateway, tendopay
 Requires at least: 4.9.1
 Tested up to: 4.9.8
