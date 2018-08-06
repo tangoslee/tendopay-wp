@@ -16,17 +16,17 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 if ( ! defined( 'TENDOPAY' ) ) {
 	define( 'TENDOPAY', true );
 
-	include_once "src/Tendopay/Tendopay.php";
-	include_once "src/Tendopay/Url_Rewriter.php";
-	include_once "src/Tendopay/Woocommerce_Order_Retriever.php";
-	include_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
-	include_once "src/Tendopay/API/Tendopay_API.php";
-	include_once "src/Tendopay/API/Hash_Calculator.php";
-	include_once "src/Tendopay/API/Description_Endpoint.php";
-	include_once "src/Tendopay/API/Authorization_Endpoint.php";
-	include_once "src/Tendopay/API/Endpoint_Caller.php";
-	include_once "src/Tendopay/API/Response.php";
-	include_once "src/Tendopay/API/Verification_Endpoint.php";
+	require_once "src/Tendopay/Tendopay.php";
+	require_once "src/Tendopay/Url_Rewriter.php";
+	require_once "src/Tendopay/Woocommerce_Order_Retriever.php";
+	require_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
+	require_once "src/Tendopay/API/Tendopay_API.php";
+	require_once "src/Tendopay/API/Hash_Calculator.php";
+	require_once "src/Tendopay/API/Description_Endpoint.php";
+	require_once "src/Tendopay/API/Authorization_Endpoint.php";
+	require_once "src/Tendopay/API/Endpoint_Caller.php";
+	require_once "src/Tendopay/API/Response.php";
+	require_once "src/Tendopay/API/Verification_Endpoint.php";
 
 	/**
 	 * The main function responsible for plugin's initialization.
