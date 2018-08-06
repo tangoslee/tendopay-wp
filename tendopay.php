@@ -33,13 +33,7 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	 * You can access the plugin simply by using <?php $tendopay = tendopay(); ?>
 	 */
 	function tendopay() {
-		static $tendopay;
-
-		if ( ! isset( $tendopay ) ) {
-			$tendopay = new Tendopay();
-		}
-
-		return $tendopay;
+		return Tendopay::get_instance();
 	}
 
 	/**

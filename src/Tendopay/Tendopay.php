@@ -13,11 +13,21 @@ use Tendopay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
 class Tendopay {
+	private static $instance;
+
 	/**
 	 * Tendopay constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->register_hooks();
+	}
+
+	public static function get_instance() {
+		if ( self::$instance === null ) {
+			self::$instance = new Tendopay();
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -97,5 +107,11 @@ class Tendopay {
 				?></p>
         </div>
 		<?php
+	}
+
+	private function __wakeup() {
+	}
+
+	private function __clone() {
 	}
 }
