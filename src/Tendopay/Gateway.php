@@ -30,7 +30,7 @@ class Gateway extends WC_Payment_Gateway {
 		$this->method_title = $this->get_option( 'method_title' );
 		$this->description  = $this->get_option( 'method_description' );
 
-		$this->view_transaction_url = Tendopay_API::get_view_url_pattern();
+		$this->view_transaction_url = Tendopay_API::get_view_uri_pattern();
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
 			$this,
@@ -77,6 +77,16 @@ class Gateway extends WC_Payment_Gateway {
 				'type'    => 'password',
 				'default' => ''
 			),
+			'tendo_client_id'       => array(
+				'title'   => __( 'API Client ID', 'tendopay' ),
+				'type'    => 'text',
+				'default' => ''
+			),
+			'tendo_client_secret'   => array(
+				'title'   => __( 'API Client Secret', 'tendopay' ),
+				'type'    => 'password',
+				'default' => ''
+			),
 		);
 	}
 
@@ -98,12 +108,12 @@ class Gateway extends WC_Payment_Gateway {
 		$descTp->set_description( $order_retriever->get_order_details() );
 
 		$redirect_args = [
-			'amount'                => $order->get_total(),
+			'amount'                => (int) $order->get_total(),
 			'authorisation_token'   => $auth_token,
-			'customer_reference_1'  => $order->get_id(),
-			'customer_reference_2'  => $order->get_order_key(),
-			'redirect_url'          => add_query_arg( [ 'key' => 'val' ], get_site_url( get_current_blog_id(), 'tendopay-result' ) ),
-			'tendo_pay_merchant_id' => $this->get_option( 'tendo_pay_merchant_id' ),
+			'customer_reference_1'  => (string) $order->get_id(),
+			'customer_reference_2'  => (string) $order->get_order_key(),
+			'redirect_url'          => get_site_url( get_current_blog_id(), 'tendopay-result' ),
+			'tendo_pay_merchant_id' => (string) $this->get_option( 'tendo_pay_merchant_id' ),
 			'vendor'                => get_bloginfo( 'blogname' )
 		];
 
@@ -118,7 +128,7 @@ class Gateway extends WC_Payment_Gateway {
 
 		$redirect_args = urlencode_deep( $redirect_args );
 
-		$redirect_url = add_query_arg( $redirect_args, Tendopay_API::get_redirect_url() );
+		$redirect_url = add_query_arg( $redirect_args, Tendopay_API::get_redirect_uri() );
 
 		return array(
 			'result'   => 'success',

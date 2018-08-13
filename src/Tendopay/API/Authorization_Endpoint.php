@@ -28,20 +28,20 @@ class Authorization_Endpoint {
 
 	/**
 	 * @throws TendoPay_Integration_Exception if response code from authorization endpoint is not 200 or empty body
+	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	public function request_token() {
 		$caller   = new Endpoint_Caller();
-		$response = $caller->do_call( Tendopay_API::get_authorization_endpoint_url(), [
-			'amount'               => $this->amount,
-			'customer_reference_1' => $this->order_id,
-			'customer_reference_2' => $this->order_key
+		$response = $caller->do_call( Tendopay_API::get_authorization_endpoint_uri(), [
+			'amount'               => (int) $this->amount,
+			'customer_reference_1' => (string) $this->order_id,
+			'customer_reference_2' => (string) $this->order_key
 		] );
 
 		if ( $response->get_code() !== 200 || empty( $response->get_body() ) ) {
-			error_log( 'Code is not 200 or body is empty' );
 			throw new TendoPay_Integration_Exception( __( 'Could not communicate with TendoPay', 'tendopay' ) );
 		}
 
-		return $response->get_body();
+		return trim( (string) $response->get_body(), "\"" );
 	}
 }

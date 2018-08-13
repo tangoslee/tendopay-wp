@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Tendopay
-Description: This plugin provides integration with Tendopay
+Plugin Name: TendoPay
+Description: TendoPay is a ‘Buy now. Pay later’ financing platform for online shopping. This plugin allows your ecommerce site to use TendoPay as a payment method.
 Version:     0.1
-Author:      TreeVert Kłodziński Robert
-Author URI:  http://www.treevert.com/
+Author:      TendoPay
+Author URI:  http://tendopay.ph/
 License:     GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
@@ -16,8 +16,9 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 if ( ! defined( 'TENDOPAY' ) ) {
 	define( 'TENDOPAY', true );
 
+	require_once "vendor/autoload.php";
 	require_once "src/Tendopay/Tendopay.php";
-	require_once "src/Tendopay/Url_Rewriter.php";
+	require_once "src/Tendopay/Redirect_Url_Rewriter.php";
 	require_once "src/Tendopay/Woocommerce_Order_Retriever.php";
 	require_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
 	require_once "src/Tendopay/API/Tendopay_API.php";
@@ -42,8 +43,13 @@ if ( ! defined( 'TENDOPAY' ) ) {
 
 	if ( in_array( 'woocommerce/woocommerce.php',
 		apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ),
+			[ Tendopay::class, 'add_settings_link' ] );
 		tendopay();
 	} else {
 		add_action( 'admin_notices', [ Tendopay::class, 'no_woocommerce_admin_notice' ] );
 	}
+
+	register_activation_hook( __FILE__, [ Tendopay::class, 'install' ] );
+	register_deactivation_hook( __FILE__, [ Tendopay::class, 'uninstall' ] );
 }

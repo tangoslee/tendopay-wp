@@ -9,6 +9,7 @@
 
 namespace Tendopay;
 
+use Tendopay\API\Tendopay_API;
 use Tendopay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
@@ -30,13 +31,25 @@ class Tendopay {
 		return self::$instance;
 	}
 
+	public static function install() {
+		Redirect_Url_Rewriter::get_instance()->add_rules();
+		flush_rewrite_rules();
+	}
+
+	public static function uninstall() {
+		/** @var \WP_Rewrite $wp_rewrite */
+		global $wp_rewrite;
+		unset( $wp_rewrite->non_wp_rules[ Tendopay_API::REDIRECT_URL_PATTERN ] );
+		flush_rewrite_rules();
+	}
+
 	/**
 	 * Registers required hooks.
 	 */
 	public function register_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init_gateway' ) );
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
-		add_action( 'plugins_loaded', array( Url_Rewriter::class, 'get_instance' ) );
+		add_action( 'plugins_loaded', array( Redirect_Url_Rewriter::class, 'get_instance' ) );
 		add_action( 'admin_post_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 		add_action( 'admin_post_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 	}
@@ -60,9 +73,15 @@ class Tendopay {
 		}
 
 		try {
+			$posted_data = $_REQUEST;
+			if ( isset( $posted_data['action'] ) ) {
+				unset( $posted_data['action'] );
+			}
 			$verification      = new Verification_Endpoint();
-			$payment_completed = $verification->verify_payment( $order, $_REQUEST );
+			$payment_completed = $verification->verify_payment( $order, $posted_data );
 		} catch ( \Exception $exception ) {
+			error_log( $exception->getMessage() );
+			error_log( $exception->getTraceAsString() );
 			wp_die( new \WP_Error( 'tendopay-integration-error', 'Could not communicate with Tendopay properly' ),
 				__( 'Could not communicate with Tendopay properly', 'tendopay' ), 403 );
 		}
@@ -102,11 +121,20 @@ class Tendopay {
 		?>
         <div class="notice notice-warning">
             <p><?php
-				_e( '<strong>Tendopay</strong> requires <strong>WooCommerce</strong> plugin enabled.',
+				_e( '<strong>TendoPay</strong> requires <strong>WooCommerce</strong> plugin enabled.',
 					'tendopay' );
 				?></p>
         </div>
 		<?php
+	}
+
+	public static function add_settings_link( $links ) {
+		$settings_link = [
+			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=tendopay' ) . '">'
+			. __( 'Settings', 'tendopay' ) . '</a>'
+		];
+
+		return array_merge( $settings_link, $links );
 	}
 
 	private function __wakeup() {

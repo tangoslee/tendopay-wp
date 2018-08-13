@@ -30,6 +30,7 @@ class Description_Endpoint {
 	 * @param $order_details
 	 *
 	 * @throws TendoPay_Integration_Exception
+	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	public function set_description( $order_details ) {
 		if ( ! is_array( $order_details ) && ! is_object( $order_details ) ) {
@@ -42,15 +43,12 @@ class Description_Endpoint {
 		}
 
 		$caller   = new Endpoint_Caller();
-		$response = $caller->do_call( Tendopay_API::get_description_endpoint_url(), [
-			'authorisation_token'  => $this->authorization_token,
-			'customer_reference_1' => $this->order_id,
-			'customer_reference_2' => $this->order_key,
-			'description'          => json_encode( $order_details ),
+		$response = $caller->do_call( Tendopay_API::get_description_endpoint_uri(), [
+			'authorisation_token'  => (string) $this->authorization_token,
+			'customer_reference_1' => (string) $this->order_id,
+			'customer_reference_2' => (string) $this->order_key,
+			'description'          => (string) json_encode( $order_details ),
 		] );
-
-		// todo remove below line while integrating with actuall API - just for local tests
-		$response = new Response( 204, $response->get_body() );
 
 		if ( $response->get_code() !== 204 ) {
 			throw new TendoPay_Integration_Exception( "Could not communicate with TendoPay" );

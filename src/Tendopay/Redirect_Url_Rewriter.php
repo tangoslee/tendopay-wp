@@ -2,17 +2,16 @@
 
 namespace Tendopay;
 
+use Tendopay\API\Tendopay_API;
+
 /**
  * Created by PhpStorm.
  * User: robert
  * Date: 11.01.18
  * Time: 20:26
  */
-class Url_Rewriter {
+class Redirect_Url_Rewriter {
 	private static $instance;
-	private $patterns = array(
-		'tendopay-result' => 'tendopay-result'
-	);
 
 	// disabled for singleton
 	private function __constructor() {
@@ -30,15 +29,6 @@ class Url_Rewriter {
 	public function add_rules() {
 		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );
 
-		$pattern = '^' . $this->patterns['tendopay-result'] . '/?';
-		add_rewrite_rule( $pattern, $url, 'top' );
-	}
-
-	public function get_pattern( $key ) {
-		if ( ! array_key_exists( $key, $this->patterns ) ) {
-			return false;
-		}
-
-		return $this->patterns[ $key ];
+		add_rewrite_rule( Tendopay_API::REDIRECT_URL_PATTERN, $url, 'top' );
 	}
 }
