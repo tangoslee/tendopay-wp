@@ -14,12 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Utils
+ * Utils class to provide utility methods used in the plugin.
+ * 
  * @package Tendopay
  */
 class Utils {
 	/**
-	 * @return bool
+	 * Checks whether the basic woocommerce plugin is enabled (wc is a required dependency)
+	 *
+	 * @return bool returns true if woocommerce is active
 	 */
 	public static function is_woocommerce_active() {
 		return in_array( 'woocommerce/woocommerce.php',

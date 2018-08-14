@@ -19,19 +19,21 @@ use \WC_Order_Factory;
  */
 class Tendopay {
 	/**
-	 * @var
+	 * @var Tendopay $instance the only instance of this class
 	 */
 	private static $instance;
 
 	/**
-	 * Tendopay constructor.
+	 * Private constructor required for singleton implementation. Registers hooks.
 	 */
 	private function __construct() {
 		$this->register_hooks();
 	}
 
 	/**
-	 * @return Tendopay
+	 * Returns the only instance of this class. If instance wasn't created yet - it creates the instance before returning.
+	 *
+	 * @return Tendopay the only instance of this class
 	 */
 	public static function get_instance() {
 		if ( self::$instance === null ) {
@@ -42,7 +44,9 @@ class Tendopay {
 	}
 
 	/**
+	 * @hook activate_tendopay/tendopay.php
 	 *
+	 * Installs rewrite rules required by the plugin. This method is executed every time the plugin is activated.
 	 */
 	public static function install() {
 		Redirect_Url_Rewriter::get_instance()->add_rules();
@@ -50,7 +54,9 @@ class Tendopay {
 	}
 
 	/**
+	 * @hook deactivate_tendopay/tendopay.php
 	 *
+	 * Removes rewirte rules required by this plugin.  This method is executed every time the plugin is deactivated.
 	 */
 	public static function uninstall() {
 		/** @var \WP_Rewrite $wp_rewrite */
@@ -60,7 +66,10 @@ class Tendopay {
 	}
 
 	/**
-	 * Registers required hooks.
+	 * Registers hooks required by the plugin:
+	 * - payment gateway initialization and registration in the woocommerce
+	 * - Setting up rewirte rules
+	 * - handing redirect with disposition from TendoPay after the transaction is completed
 	 */
 	public function register_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init_gateway' ) );
@@ -71,31 +80,43 @@ class Tendopay {
 	}
 
 	/**
+	 * @hook admin_post_tendopay-result 10
+	 * @hook admin_post_nopriv_tendopay-result 10
+     *
+	 * Handles redirect with disposition from TendoPay after the transaction is completed.
+	 *
+	 * When the redirect comes in this function verifies the outcome of transaction. It does that first by checking if
+	 * the hash from incoming parameters is calculated properly. Only if it is valid it will call TendoPay API
+	 * Verification Endpoint with verification token to get the confirmed status of this transaction.
+	 *
+	 * Please note you should not trust only the parameters that comes with the redirect.
+	 *
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	function handle_redirect_from_tendopay() {
-		$order     = WC_Order_Factory::get_order( (int) $_REQUEST['customer_reference_1'] );
-		$order_key = $_REQUEST['customer_reference_2'];
+		$posted_data = $_REQUEST;
+		if ( isset( $posted_data['action'] ) ) {
+			unset( $posted_data['action'] );
+		}
+
+		$order     = WC_Order_Factory::get_order( (int) $posted_data['customer_reference_1'] );
+		$order_key = $posted_data['customer_reference_2'];
 
 		if ( $order->get_order_key() !== $order_key ) {
 			wp_die( new \WP_Error( 'wrong-order-key', 'Wrong order key provided' ),
 				__( 'Wrong order key provided', 'tendopay' ), 403 );
 		}
 
-		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
-
-		$tendo_pay_merchant_id       = $_REQUEST['tendo_pay_merchant_id'];
+		$gateway_options             = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
+		$tendo_pay_merchant_id       = $posted_data['tendo_pay_merchant_id'];
 		$local_tendo_pay_merchant_id = $gateway_options['tendo_pay_merchant_id'];
+
 		if ( $tendo_pay_merchant_id !== $local_tendo_pay_merchant_id ) {
 			wp_die( new \WP_Error( 'wrong-merchant-id', 'Malformed payload' ),
 				__( 'Malformed payload', 'tendopay' ), 403 );
 		}
 
 		try {
-			$posted_data = $_REQUEST;
-			if ( isset( $posted_data['action'] ) ) {
-				unset( $posted_data['action'] );
-			}
 			$verification      = new Verification_Endpoint();
 			$payment_completed = $verification->verify_payment( $order, $posted_data );
 		} catch ( \Exception $exception ) {
@@ -117,11 +138,13 @@ class Tendopay {
 
 
 	/**
+	 * @hook woocommerce_payment_gateways 10
+	 *
 	 * Registers Tendopay gateway in the system.
 	 *
-	 * @param $methods
+	 * @param array $methods Other methods registered in the system
 	 *
-	 * @return array
+	 * @return array modified list of gateways (including tendopay)
 	 */
 	public function register_gateway( $methods ) {
 		$methods[] = Gateway::class;
@@ -130,6 +153,8 @@ class Tendopay {
 	}
 
 	/**
+	 * @hook plugins_loaded 10
+	 *
 	 * Initializes gateway
 	 */
 	public function init_gateway() {
@@ -137,7 +162,9 @@ class Tendopay {
 	}
 
 	/**
+	 * @hook admin_notices 10
 	 *
+	 * Shows notice that Woocommerce plugin must be enabled.
 	 */
 	public static function no_woocommerce_admin_notice() {
 		?>
@@ -151,9 +178,11 @@ class Tendopay {
 	}
 
 	/**
-	 * @param $links
+	 * @hook plugin_action_links_tendopay/tendopay.php 10
 	 *
-	 * @return array
+	 * @param array $links List of other links
+	 *
+	 * @return array list of plugin action links with added link to plugin settings
 	 */
 	public static function add_settings_link( $links ) {
 		$settings_link = [
