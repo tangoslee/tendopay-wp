@@ -13,7 +13,14 @@ use Tendopay\API\Tendopay_API;
 use Tendopay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
+/**
+ * Class Tendopay
+ * @package Tendopay
+ */
 class Tendopay {
+	/**
+	 * @var
+	 */
 	private static $instance;
 
 	/**
@@ -23,6 +30,9 @@ class Tendopay {
 		$this->register_hooks();
 	}
 
+	/**
+	 * @return Tendopay
+	 */
 	public static function get_instance() {
 		if ( self::$instance === null ) {
 			self::$instance = new Tendopay();
@@ -31,11 +41,17 @@ class Tendopay {
 		return self::$instance;
 	}
 
+	/**
+	 *
+	 */
 	public static function install() {
 		Redirect_Url_Rewriter::get_instance()->add_rules();
 		flush_rewrite_rules();
 	}
 
+	/**
+	 *
+	 */
 	public static function uninstall() {
 		/** @var \WP_Rewrite $wp_rewrite */
 		global $wp_rewrite;
@@ -54,6 +70,9 @@ class Tendopay {
 		add_action( 'admin_post_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 	}
 
+	/**
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
 	function handle_redirect_from_tendopay() {
 		$order     = WC_Order_Factory::get_order( (int) $_REQUEST['customer_reference_1'] );
 		$order_key = $_REQUEST['customer_reference_2'];
@@ -117,6 +136,9 @@ class Tendopay {
 		include_once dirname( __FILE__ ) . "/Gateway.php";
 	}
 
+	/**
+	 *
+	 */
 	public static function no_woocommerce_admin_notice() {
 		?>
         <div class="notice notice-warning">
@@ -128,6 +150,11 @@ class Tendopay {
 		<?php
 	}
 
+	/**
+	 * @param $links
+	 *
+	 * @return array
+	 */
 	public static function add_settings_link( $links ) {
 		$settings_link = [
 			'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=tendopay' ) . '">'

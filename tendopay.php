@@ -10,6 +10,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 use Tendopay\Tendopay;
+use Tendopay\Utils;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -17,6 +18,7 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	define( 'TENDOPAY', true );
 
 	require_once "vendor/autoload.php";
+	require_once "src/Tendopay/Utils.php";
 	require_once "src/Tendopay/Tendopay.php";
 	require_once "src/Tendopay/Redirect_Url_Rewriter.php";
 	require_once "src/Tendopay/Woocommerce_Order_Retriever.php";
@@ -37,12 +39,7 @@ if ( ! defined( 'TENDOPAY' ) ) {
 		return Tendopay::get_instance();
 	}
 
-	/**
-	 * Initialize.
-	 */
-
-	if ( in_array( 'woocommerce/woocommerce.php',
-		apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	if ( Utils::is_woocommerce_active() ) {
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ),
 			[ Tendopay::class, 'add_settings_link' ] );
 		tendopay();

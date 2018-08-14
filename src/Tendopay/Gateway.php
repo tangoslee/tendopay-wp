@@ -16,9 +16,19 @@ use WC_Data_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
 
+/**
+ * Class Gateway
+ * @package Tendopay
+ */
 class Gateway extends WC_Payment_Gateway {
+	/**
+	 *
+	 */
 	const GATEWAY_ID = 'tendopay';
 
+	/**
+	 * Gateway constructor.
+	 */
 	function __construct() {
 		$this->id         = self::GATEWAY_ID;
 		$this->has_fields = false;
@@ -38,6 +48,9 @@ class Gateway extends WC_Payment_Gateway {
 		) );
 	}
 
+	/**
+	 *
+	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
 			'enabled'               => array(
@@ -95,7 +108,7 @@ class Gateway extends WC_Payment_Gateway {
 	 *
 	 * @return array
 	 * @throws Exceptions\TendoPay_Integration_Exception
-	 * @throws WC_Data_Exception
+	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	public function process_payment( $order_id ) {
 		$order = new WC_Order( (int) $order_id );

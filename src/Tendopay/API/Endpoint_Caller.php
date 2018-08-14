@@ -16,16 +16,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Endpoint_Caller
+ * @package Tendopay\API
+ */
 class Endpoint_Caller {
+	/**
+	 * @var
+	 */
 	private static $bearer_token;
 
+	/**
+	 * @var
+	 */
 	private $tendopay_merchant_id;
+	/**
+	 * @var
+	 */
 	private $secret;
+	/**
+	 * @var
+	 */
 	private $api_client_id;
+	/**
+	 * @var
+	 */
 	private $api_client_secret;
+	/**
+	 * @var Hash_Calculator
+	 */
 	private $hash_calculator;
+	/**
+	 * @var Client
+	 */
 	private $client;
 
+	/**
+	 * Endpoint_Caller constructor.
+	 */
 	public function __construct() {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 

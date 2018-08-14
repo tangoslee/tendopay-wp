@@ -11,12 +11,20 @@ use Tendopay\API\Tendopay_API;
  * Time: 20:26
  */
 class Redirect_Url_Rewriter {
+	/**
+	 * @var
+	 */
 	private static $instance;
 
-	// disabled for singleton
+	/**
+	 *
+	 */
 	private function __constructor() {
 	}
 
+	/**
+	 * @return Redirect_Url_Rewriter
+	 */
 	public static function get_instance() {
 		if ( null == self::$instance ) {
 			self::$instance = new self();
@@ -26,6 +34,9 @@ class Redirect_Url_Rewriter {
 		return self::$instance;
 	}
 
+	/**
+	 *
+	 */
 	public function add_rules() {
 		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );
 

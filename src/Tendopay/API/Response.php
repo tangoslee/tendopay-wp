@@ -13,8 +13,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Response
+ * @package Tendopay\API
+ */
 class Response {
+	/**
+	 * @var
+	 */
 	private $body;
+	/**
+	 * @var
+	 */
 	private $code;
 
 	/**

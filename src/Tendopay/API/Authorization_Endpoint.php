@@ -14,12 +14,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Authorization_Endpoint
+ * @package Tendopay\API
+ */
 class Authorization_Endpoint {
 	/** @var int order_id */
 	private $order_id;
+	/**
+	 * @var string
+	 */
 	private $order_key;
+	/**
+	 * @var float
+	 */
 	private $amount;
 
+	/**
+	 * Authorization_Endpoint constructor.
+	 *
+	 * @param \WC_Order $order
+	 */
 	public function __construct( \WC_Order $order ) {
 		$this->order_id  = $order->get_id();
 		$this->order_key = $order->get_order_key();

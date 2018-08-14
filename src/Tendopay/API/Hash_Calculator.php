@@ -13,8 +13,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Hash_Calculator
+ * @package Tendopay\API
+ */
 class Hash_Calculator {
+	/**
+	 * @var array
+	 */
 	private $hash_keys_exclusion_list = [ 'hash' ];
+	/**
+	 * @var
+	 */
 	private $secret;
 
 	/**
@@ -26,6 +36,11 @@ class Hash_Calculator {
 		$this->secret = $secret;
 	}
 
+	/**
+	 * @param array $data
+	 *
+	 * @return false|string
+	 */
 	public function calculate( array $data ) {
 		$data = array_map( function ( $value ) {
 			return trim( $value );

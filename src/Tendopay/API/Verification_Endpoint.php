@@ -17,6 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Verification_Endpoint
+ * @package Tendopay\API
+ */
 class Verification_Endpoint {
 	/**
 	 * @param \WC_Order $order

@@ -15,6 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class Tendopay_API
+ * @package Tendopay\API
+ */
 class Tendopay_API {
 	const REDIRECT_URL_PATTERN = '^tendopay-result/?';
 
@@ -37,38 +41,65 @@ class Tendopay_API {
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const SANDBOX_BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
 
+	/**
+	 * @return string
+	 */
 	public static function get_hash_algorithm() {
 		return self::HASH_ALGORITHM;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_base_api_url() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_BASE_API_URL : self::BASE_API_URL;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_redirect_uri() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_REDIRECT_URI : self::REDIRECT_URI;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_view_uri_pattern() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_VIEW_URI_PATTERN : self::VIEW_URI_PATTERN;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_verification_endpoint_uri() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_VERIFICATION_ENDPOINT_URI : self::VERIFICATION_ENDPOINT_URI;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_authorization_endpoint_uri() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_AUTHORIZATION_ENDPOINT_URI : self::AUTHORIZATION_ENDPOINT_URI;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_description_endpoint_uri() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_DESCRIPTION_ENDPOINT_URI : self::DESCRIPTION_ENDPOINT_URI;
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_bearer_token_endpoint_uri() {
 		return self::is_sandbox_enabled() ? self::SANDBOX_BEARER_TOKEN_ENDPOINT_URI : self::BEARER_TOKEN_ENDPOINT_URI;
 	}
 
+	/**
+	 * @return bool
+	 */
 	private static function is_sandbox_enabled() {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 

@@ -13,6 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
+/**
+ * Class TendoPay_Integration_Exception
+ * @package Tendopay\Exceptions
+ */
 class TendoPay_Integration_Exception extends \Exception {
 
 }
