@@ -10,7 +10,7 @@ namespace Tendopay\API;
 
 
 use Tendopay\Exceptions\TendoPay_Integration_Exception;
-use Tendopay\Woocommerce_Order_Retriever;
+use Tendopay\Woocommerce_Order_Description_Retriever;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -35,7 +35,7 @@ class Description_Endpoint {
 	 *         thrown by guzzle http client)
 	 */
 	public static function set_description( $authorization_token, \WC_Order $order ) {
-		$order_retriever = new Woocommerce_Order_Retriever( $order );
+		$order_retriever = new Woocommerce_Order_Description_Retriever( $order );
 		$order_details   = $order_retriever->get_order_details();
 
 		if ( ! is_array( $order_details ) && ! is_object( $order_details ) ) {

@@ -21,7 +21,7 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	require_once "src/Tendopay/Utils.php";
 	require_once "src/Tendopay/Tendopay.php";
 	require_once "src/Tendopay/Redirect_Url_Rewriter.php";
-	require_once "src/Tendopay/Woocommerce_Order_Retriever.php";
+	require_once "src/Tendopay/Woocommerce_Order_Description_Retriever.php";
 	require_once "src/Tendopay/Exceptions/TendoPay_Integration_Exception.php";
 	require_once "src/Tendopay/API/Tendopay_API.php";
 	require_once "src/Tendopay/API/Hash_Calculator.php";
