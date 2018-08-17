@@ -12,6 +12,7 @@ use Tendopay\API\Authorization_Endpoint;
 use Tendopay\API\Description_Endpoint;
 use Tendopay\API\Hash_Calculator;
 use Tendopay\API\Tendopay_API;
+use Tendopay\Exceptions\TendoPay_Integration_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
 
@@ -111,7 +112,7 @@ class Gateway extends WC_Payment_Gateway {
 	 * @return array status of the payment and redirect url. The status is always `success` because if there was
 	 *         any problem, this method would rethrow an exception.
 	 *
-	 * @throws Exceptions\TendoPay_Integration_Exception rethrown either from {@link Authorization_Endpoint}
+	 * @throws TendoPay_Integration_Exception rethrown either from {@link Authorization_Endpoint}
 	 *         or {@link Description_Endpoint}
 	 * @throws \GuzzleHttp\Exception\GuzzleException  when there was a problem in communication with the API (originally
 	 *         thrown by guzzle http client)
@@ -119,8 +120,15 @@ class Gateway extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 		$order = new WC_Order( (int) $order_id );
 
-		$auth_token = Authorization_Endpoint::request_token( $order );
-		Description_Endpoint::set_description( $auth_token, $order );
+		$auth_token = null;
+
+		try {
+			$auth_token = Authorization_Endpoint::request_token( $order );
+			Description_Endpoint::set_description( $auth_token, $order );
+		} catch ( \Exception $exception ) {
+			throw new TendoPay_Integration_Exception(
+				__( 'Could not communicate with TendoPay', 'tendopay' ), $exception );
+		}
 
 		$redirect_args = [
 			'amount'                => (int) $order->get_total(),

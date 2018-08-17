@@ -18,5 +18,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package Tendopay\Exceptions
  */
 class TendoPay_Integration_Exception extends \Exception {
-
+	/**
+	 * TendoPay_Integration_Exception constructor.
+	 */
+	public function __construct( $message, \Throwable $previous = null ) {
+		parent::__construct( $message, 0, $previous );
+	}
 }

@@ -29,8 +29,10 @@ class Description_Endpoint {
 	 * @param string $authorization_token authorization token obtained from {@link Authorization_Endpoint}
 	 * @param \WC_Order $order order that is going paid.
 	 *
-	 * @throws TendoPay_Integration_Exception if the order details taken from the order are not returned in form of array
+	 * @throws \InvalidArgumentException if the order details taken from the order are not returned in form of array
 	 *         or object. It should be very rare case as it shouldn't be possible to place order without items.
+	 * @throws TendoPay_Integration_Exception if response code from the request from Description Endpoint is different
+	 *         than 204
 	 * @throws \GuzzleHttp\Exception\GuzzleException when there was a problem in communication with the API (originally
 	 *         thrown by guzzle http client)
 	 */
@@ -57,7 +59,8 @@ class Description_Endpoint {
 		] );
 
 		if ( $response->get_code() !== 204 ) {
-			throw new TendoPay_Integration_Exception( __( 'Could not communicate with TendoPay', 'tendopay' ) );
+			throw new TendoPay_Integration_Exception(
+				__( 'Got response code != 204 while sending products description', 'tendopay' ) );
 		}
 	}
 }
