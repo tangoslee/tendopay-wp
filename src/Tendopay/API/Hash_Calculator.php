@@ -14,32 +14,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Hash_Calculator
+ * Provides logic for hash calculation based on the input data. Uses sha256.
+ *
  * @package Tendopay\API
  */
 class Hash_Calculator {
 	/**
-	 * @var array
+	 * @var array $hash_keys_exclusion_list it provides list of array keys that will be excluded from hashing.
 	 */
 	private $hash_keys_exclusion_list = [ 'hash' ];
 	/**
-	 * @var
+	 * @var string $secret secret used to calculate the hash
 	 */
 	private $secret;
 
 	/**
-	 * Hash_Calculator constructor.
+	 * Configures the hash calculator.
 	 *
-	 * @param $secret
+	 * @param string $secret secret used to calculate the hash
 	 */
 	public function __construct( $secret ) {
 		$this->secret = $secret;
 	}
 
 	/**
-	 * @param array $data
+	 * Calculates hash based on the `$data` and {@link Hash_Calculator::$secret}.
 	 *
-	 * @return false|string
+	 * @param array $data input data based on which the hash will be calculated
+	 *
+	 * @return false|string The hash in string. False if hash algorithm defined in
+	 *         {@link Tendopay_API::get_hash_algorithm()} is unknown or invalid.
 	 */
 	public function calculate( array $data ) {
 		$data = array_map( function ( $value ) {

@@ -12,22 +12,22 @@ use Tendopay\API\Authorization_Endpoint;
 use Tendopay\API\Description_Endpoint;
 use Tendopay\API\Hash_Calculator;
 use Tendopay\API\Tendopay_API;
-use WC_Data_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
 
 /**
- * Class Gateway
+ * This class implements the woocommerce gateway mechanism.
+ *
  * @package Tendopay
  */
 class Gateway extends WC_Payment_Gateway {
 	/**
-	 *
+	 * Unique ID of the gateway.
 	 */
 	const GATEWAY_ID = 'tendopay';
 
 	/**
-	 * Gateway constructor.
+	 * Prepares the gateway configuration.
 	 */
 	function __construct() {
 		$this->id         = self::GATEWAY_ID;
@@ -49,7 +49,7 @@ class Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 *
+	 * Prepares settings forms for plugin's settings page.
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
@@ -104,21 +104,23 @@ class Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * @param int $order_id
+	 * Processes the payment. This method is called right after customer clicks the `Place order` button.
 	 *
-	 * @return array
-	 * @throws Exceptions\TendoPay_Integration_Exception
-	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 * @param int $order_id ID of the order that customer wants to pay.
+	 *
+	 * @return array status of the payment and redirect url. The status is always `success` because if there was
+	 *         any problem, this method would rethrow an exception.
+	 *
+	 * @throws Exceptions\TendoPay_Integration_Exception rethrown either from {@link Authorization_Endpoint}
+	 *         or {@link Description_Endpoint}
+	 * @throws \GuzzleHttp\Exception\GuzzleException  when there was a problem in communication with the API (originally
+	 *         thrown by guzzle http client)
 	 */
 	public function process_payment( $order_id ) {
 		$order = new WC_Order( (int) $order_id );
 
-		$authTp     = new Authorization_Endpoint( $order );
-		$auth_token = $authTp->request_token();
-
-		$descTp          = new Description_Endpoint( $auth_token, $order );
-		$order_retriever = new Woocommerce_Order_Retriever( $order );
-		$descTp->set_description( $order_retriever->get_order_details() );
+		$auth_token = Authorization_Endpoint::request_token( $order );
+		Description_Endpoint::set_description( $auth_token, $order );
 
 		$redirect_args = [
 			'amount'                => (int) $order->get_total(),

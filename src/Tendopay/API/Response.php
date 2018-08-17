@@ -14,24 +14,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Response
+ * Wrapper class for response code and body from the API.
+ *
  * @package Tendopay\API
  */
 class Response {
 	/**
-	 * @var
+	 * @var string $body Response body
 	 */
 	private $body;
 	/**
-	 * @var
+	 * @var string $code Response code
 	 */
 	private $code;
 
 	/**
 	 * Response constructor.
 	 *
-	 * @param $body
-	 * @param $code
+	 * @param $code Response code
+	 * @param $body Response body
 	 */
 	public function __construct( $code, $body ) {
 		$this->body = $body;
@@ -41,7 +42,7 @@ class Response {
 	/**
 	 * Returns body of the response from TendoPay API
 	 *
-	 * @return mixed
+	 * @return string the response body
 	 */
 	public function get_body() {
 		return $this->body;
@@ -50,7 +51,7 @@ class Response {
 	/**
 	 * Returns response code from TendoPay API
 	 *
-	 * @return mixed
+	 * @return string the response code
 	 */
 	public function get_code() {
 		return $this->code;

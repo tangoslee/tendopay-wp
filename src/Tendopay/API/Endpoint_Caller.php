@@ -8,7 +8,6 @@
 
 namespace Tendopay\API;
 
-
 use GuzzleHttp\Client;
 use Tendopay\Gateway;
 
@@ -22,37 +21,38 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Endpoint_Caller {
 	/**
-	 * @var
+	 * @var string $bearer_token the bearer token requested in previous API calls. If it's null, it will be taken from
+	 * wordpress options. If it was null or expired in the options, it will be then requested from the API.
 	 */
 	private static $bearer_token;
 
 	/**
-	 * @var
+	 * @var string $tendopay_merchant_id the merchand ID taken from TendoPay
 	 */
 	private $tendopay_merchant_id;
 	/**
-	 * @var
+	 * @var string $secret the `secret` string used for hash calculation.
 	 */
 	private $secret;
 	/**
-	 * @var
+	 * @var string $api_client_id the client ID used for requesting the Bearer token
 	 */
 	private $api_client_id;
 	/**
-	 * @var
+	 * @var string $api_client_secret the secret string used when requesting the bearer token
 	 */
 	private $api_client_secret;
 	/**
-	 * @var Hash_Calculator
+	 * @var Hash_Calculator $hash_calculator calculates sha256 hash of input data using a secret key
 	 */
 	private $hash_calculator;
 	/**
-	 * @var Client
+	 * @var \GuzzleHttp\Client $client a http client to make the API calls
 	 */
 	private $client;
 
 	/**
-	 * Endpoint_Caller constructor.
+	 * Prepares configuration required to make the TendoPay API calls.
 	 */
 	public function __construct() {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
@@ -70,6 +70,8 @@ class Endpoint_Caller {
 	}
 
 	/**
+	 * Performs the actual API call.
+	 *
 	 * @param string $url url of the endpoint
 	 * @param array $data data to be posted to the endpoint
 	 *
@@ -82,9 +84,6 @@ class Endpoint_Caller {
 		] );
 
 		$data['hash'] = $this->hash_calculator->calculate( $data );
-
-		error_log( "do_call" );
-		error_log( json_encode( $data ) );
 
 		$response = $this->client->request( 'POST', $url, [
 			'headers' => [
@@ -101,16 +100,28 @@ class Endpoint_Caller {
 
 
 	/**
-	 * @return mixed
-	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 * Gets the bearer token in the following way:
+	 * 1. Takes the bearer token from {@link Endpoint_Caller::$bearer_token}
+	 * 2. If {@link Endpoint_Caller::$bearer_token} is null, takes it from the wordpress options
+	 *    by option_key = `tendopay_bearer_token`
+	 * 3. If the bearer token still is null, then it requests it from the API and updates both
+	 *    {@link Endpoint_Caller::$bearer_token} and wordpress option.
+	 *
+	 * @return object returns an object containing the `token` and the `expiration_timestamp`
+	 * @throws \GuzzleHttp\Exception\GuzzleException when there was a problem in communication with the API (originally
+	 * thrown by guzzle http client)
 	 */
 	private function get_bearer_token() {
-		if ( ! self::$bearer_token ) {
+		if ( self::$bearer_token !== null ) {
 			self::$bearer_token = get_option( 'tendopay_bearer_token' );
 		}
 
-		$bearer_expiration_timestamp = self::$bearer_token->expiration_timestamp;
-		$current_timestamp           = new \DateTime( 'now' );
+		$bearer_expiration_timestamp = - 1;
+		if ( self::$bearer_token !== null && property_exists( self::$bearer_token, 'expiration_timestamp' ) ) {
+			$bearer_expiration_timestamp = self::$bearer_token->expiration_timestamp;
+		}
+
+		$current_timestamp = new \DateTime( 'now' );
 
 		if ( $bearer_expiration_timestamp <= $current_timestamp->getTimestamp() - 30 ) {
 			$response = $this->client->request( 'POST', Tendopay_API::get_bearer_token_endpoint_uri(), [

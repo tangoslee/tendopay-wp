@@ -18,17 +18,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Verification_Endpoint
+ * This class is responsible for communication with the Verification Endpoint of TendoPay API.
+ *
  * @package Tendopay\API
  */
 class Verification_Endpoint {
 	/**
-	 * @param \WC_Order $order
-	 * @param array $data
+	 * Verifies the payment.
 	 *
-	 * @return bool
-	 * @throws TendoPay_Integration_Exception
-	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 * @param \WC_Order $order the order for which the payment is being verified
+	 * @param array $data data that came with the redirection from TP site.
+	 *
+	 * @return bool if the payment has been properly verified AND its status is `success`
+	 *
+	 * @throws TendoPay_Integration_Exception when the response code from verification endpoint is not equal to `200`
+	 * @throws \GuzzleHttp\Exception\GuzzleException when there was a problem in communication with the API (originally
+	 *         thrown by guzzle http client)
+	 * @throws InvalidArgumentException if the hash from redirection doesn't match the calculated hash
 	 */
 	public function verify_payment( \WC_Order $order, array $data ) {
 		ksort( $data );

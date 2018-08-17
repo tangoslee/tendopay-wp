@@ -1,29 +1,36 @@
 <?php
-
-namespace Tendopay;
-
-use Tendopay\API\Tendopay_API;
-
 /**
  * Created by PhpStorm.
  * User: robert
  * Date: 11.01.18
  * Time: 20:26
  */
+
+namespace Tendopay;
+
+use Tendopay\API\Tendopay_API;
+
+/**
+ * This class registers new custom (nice) link used for handling redirection from TendoPay.
+ *
+ * @package Tendopay
+ */
 class Redirect_Url_Rewriter {
 	/**
-	 * @var
+	 * @var Redirect_Url_Rewriter $instance the only instance of this class (since it's singleton)
 	 */
 	private static $instance;
 
 	/**
-	 *
+	 * Making not possible to call the constructor outside of this class.
 	 */
 	private function __constructor() {
 	}
 
 	/**
-	 * @return Redirect_Url_Rewriter
+	 * Returns the only instance of this class. If it doesn't exists, it creates it (once).
+	 *
+	 * @return Redirect_Url_Rewriter the only one instance of this class
 	 */
 	public static function get_instance() {
 		if ( null == self::$instance ) {
@@ -35,7 +42,9 @@ class Redirect_Url_Rewriter {
 	}
 
 	/**
+	 * @hook init 10
 	 *
+	 * Adds rewrite rules to handle custom link.
 	 */
 	public function add_rules() {
 		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );

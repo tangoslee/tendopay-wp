@@ -15,42 +15,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Authorization_Endpoint
+ * This class is responsible for communication with the Authorization Endpoint of TendoPay API.
+ *
  * @package Tendopay\API
  */
 class Authorization_Endpoint {
-	/** @var int order_id */
-	private $order_id;
 	/**
-	 * @var string
-	 */
-	private $order_key;
-	/**
-	 * @var float
-	 */
-	private $amount;
-
-	/**
-	 * Authorization_Endpoint constructor.
+	 * Initiates single payment attempt by sending basic information about the order to the TendoPay and returns
+	 * the authentication token.
 	 *
-	 * @param \WC_Order $order
+	 * @param \WC_Order $order the order for which we want to initiate the payment
+	 *
+	 * @return string authentication token
+	 *
+	 * @throws TendoPay_Integration_Exception if response code from authorization endpoint is not 200 or has empty body
+	 * @throws \GuzzleHttp\Exception\GuzzleException when there was a problem in communication with the API (originally
+	 * thrown by guzzle http client)
 	 */
-	public function __construct( \WC_Order $order ) {
-		$this->order_id  = $order->get_id();
-		$this->order_key = $order->get_order_key();
-		$this->amount    = $order->get_total();
-	}
-
-	/**
-	 * @throws TendoPay_Integration_Exception if response code from authorization endpoint is not 200 or empty body
-	 * @throws \GuzzleHttp\Exception\GuzzleException
-	 */
-	public function request_token() {
+	public static function request_token( \WC_Order $order ) {
 		$caller   = new Endpoint_Caller();
 		$response = $caller->do_call( Tendopay_API::get_authorization_endpoint_uri(), [
-			'amount'               => (int) $this->amount,
-			'customer_reference_1' => (string) $this->order_id,
-			'customer_reference_2' => (string) $this->order_key
+			'amount'               => (int) $order->get_total(),
+			'customer_reference_1' => (string) $order->get_id(),
+			'customer_reference_2' => $order->get_order_key()
 		] );
 
 		if ( $response->get_code() !== 200 || empty( $response->get_body() ) ) {
