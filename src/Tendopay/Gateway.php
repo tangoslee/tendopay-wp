@@ -126,6 +126,7 @@ class Gateway extends WC_Payment_Gateway {
 			$auth_token = Authorization_Endpoint::request_token( $order );
 			Description_Endpoint::set_description( $auth_token, $order );
 		} catch ( \Exception $exception ) {
+			error_log($exception);
 			throw new TendoPay_Integration_Exception(
 				__( 'Could not communicate with TendoPay', 'tendopay' ), $exception );
 		}
