@@ -45,7 +45,7 @@ class Verification_Endpoint {
 		$hash = $data['hash'];
 
 		if ( $hash !== $hash_calculator->calculate( $data ) ) {
-			throw new InvalidArgumentException( "Hash doesn't match" );
+			throw new InvalidArgumentException( __( "Hash doesn't match", "tendopay" ) );
 		}
 
 		$disposition                  = $data['disposition'];
@@ -67,7 +67,8 @@ class Verification_Endpoint {
 
 		if ( $response->get_code() !== 200 ) {
 			throw new TendoPay_Integration_Exception(
-				"Received error: [{$response->get_code()}] while trying to verify the transaction" );
+				sprintf( __( "Received error: [%s] while trying to verify the transaction", 'tendopay' ),
+					$response->get_code() ) );
 		}
 
 		$json = json_decode( $response->get_body() );

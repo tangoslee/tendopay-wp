@@ -75,7 +75,7 @@ class Gateway extends WC_Payment_Gateway {
 			),
 			'tendo_sandbox_enabled' => array(
 				'title'       => __( 'Enable SANDBOX', 'tendopay' ),
-				'description' => __( 'Enable SANDBOX if you want to test integration with Tendopay without real transactions.' ),
+				'description' => __( 'Enable SANDBOX if you want to test integration with Tendopay without real transactions.', 'tendopay' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,

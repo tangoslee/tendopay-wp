@@ -82,7 +82,7 @@ class Tendopay {
 	/**
 	 * @hook admin_post_tendopay-result 10
 	 * @hook admin_post_nopriv_tendopay-result 10
-     *
+	 *
 	 * Handles redirect with disposition from TendoPay after the transaction is completed.
 	 *
 	 * When the redirect comes in this function verifies the outcome of transaction. It does that first by checking if
@@ -103,7 +103,7 @@ class Tendopay {
 		$order_key = $posted_data['customer_reference_2'];
 
 		if ( $order->get_order_key() !== $order_key ) {
-			wp_die( new \WP_Error( 'wrong-order-key', 'Wrong order key provided' ),
+			wp_die( new \WP_Error( 'wrong-order-key', __( 'Wrong order key provided', 'tendopay' ) ),
 				__( 'Wrong order key provided', 'tendopay' ), 403 );
 		}
 
@@ -122,7 +122,8 @@ class Tendopay {
 		} catch ( \Exception $exception ) {
 			error_log( $exception->getMessage() );
 			error_log( $exception->getTraceAsString() );
-			wp_die( new \WP_Error( 'tendopay-integration-error', 'Could not communicate with Tendopay properly' ),
+			wp_die( new \WP_Error( 'tendopay-integration-error',
+				__( 'Could not communicate with Tendopay properly', 'tendopay' ) ),
 				__( 'Could not communicate with Tendopay properly', 'tendopay' ), 403 );
 		}
 

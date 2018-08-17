@@ -39,7 +39,8 @@ class Description_Endpoint {
 		$order_details   = $order_retriever->get_order_details();
 
 		if ( ! is_array( $order_details ) && ! is_object( $order_details ) ) {
-			throw new \InvalidArgumentException( "Order details parameter must be either ARRAY or OBJECT" );
+			throw new \InvalidArgumentException(
+				__( 'Order details parameter must be either ARRAY or OBJECT', 'tendopay' ) );
 		}
 
 		if ( empty( $order_details ) ) {
@@ -56,7 +57,7 @@ class Description_Endpoint {
 		] );
 
 		if ( $response->get_code() !== 204 ) {
-			throw new TendoPay_Integration_Exception( "Could not communicate with TendoPay" );
+			throw new TendoPay_Integration_Exception( __( 'Could not communicate with TendoPay', 'tendopay' ) );
 		}
 	}
 }
