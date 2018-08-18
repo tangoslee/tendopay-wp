@@ -58,12 +58,12 @@ class Woocommerce_Order_Description_Retriever {
 	 */
 	public function get_order_details() {
 		$order_details = [
-			'items' => []
+			Constants::ITEMS_DESC_PROPNAME => []
 		];
 
 		$line_items = $this->order->get_items();
 		foreach ( $line_items as $item ) {
-			$order_details['items'][] = $this->create_line_item( $item );
+			$order_details[ Constants::ITEMS_DESC_PROPNAME ][] = $this->create_line_item( $item );
 		}
 
 		return apply_filters( 'tendopay_order_details', $order_details, $this->order );
@@ -93,12 +93,12 @@ class Woocommerce_Order_Description_Retriever {
 		$product = wc_get_product( $line_item_data['product_id'] );
 
 		$description_line_item = [
-			'id'          => $line_item_data['id'],
-			'title'       => $line_item_data['name'],
-			'description' => $product->get_description(),
-			'SKU'         => $product->get_sku(),
-			'price'       => $line_item_data['total'] + $line_item_data['total_tax'],
-			'quantity'    => $line_item_data['quantity'],
+			'id'                           => $line_item_data['id'],
+			Constants::TITLE_ITEM_PROPNAME => $line_item_data['name'],
+			Constants::DESC_ITEM_PROPNAME  => $product->get_description(),
+			Constants::SKU_ITEM_PROPNAME   => $product->get_sku(),
+			Constants::PRICE_ITEM_PROPNAME => $line_item_data['total'] + $line_item_data['total_tax'],
+			'quantity'                     => $line_item_data['quantity'],
 		];
 
 		return apply_filters( 'tendopay_description_line_item', $description_line_item, $line_item );

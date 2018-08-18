@@ -99,8 +99,8 @@ class TendoPay {
 			unset( $posted_data['action'] );
 		}
 
-		$order     = WC_Order_Factory::get_order( (int) $posted_data['customer_reference_1'] );
-		$order_key = $posted_data['customer_reference_2'];
+		$order     = WC_Order_Factory::get_order( (int) $posted_data[ Constants::ORDER_ID_PARAM ] );
+		$order_key = $posted_data[ Constants::ORDER_KEY_PARAM ];
 
 		if ( $order->get_order_key() !== $order_key ) {
 			wp_die( new \WP_Error( 'wrong-order-key', __( 'Wrong order key provided', 'tendopay' ) ),
@@ -108,8 +108,8 @@ class TendoPay {
 		}
 
 		$gateway_options             = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
-		$tendo_pay_merchant_id       = $posted_data['tendo_pay_merchant_id'];
-		$local_tendo_pay_merchant_id = $gateway_options['tendo_pay_merchant_id'];
+		$tendo_pay_merchant_id       = $posted_data[ Constants::VENDOR_ID_PARAM ];
+		$local_tendo_pay_merchant_id = $gateway_options[ Constants::VENDOR_ID_PARAM ];
 
 		if ( $tendo_pay_merchant_id !== $local_tendo_pay_merchant_id ) {
 			wp_die( new \WP_Error( 'wrong-merchant-id', 'Malformed payload' ),

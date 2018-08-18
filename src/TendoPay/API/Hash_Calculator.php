@@ -24,7 +24,7 @@ class Hash_Calculator {
 	/**
 	 * @var array $hash_keys_exclusion_list it provides list of array keys that will be excluded from hashing.
 	 */
-	private $hash_keys_exclusion_list = [ 'hash' ];
+	private $hash_keys_exclusion_list = [ Constants::HASH_PARAM ];
 	/**
 	 * @var string $secret secret used to calculate the hash
 	 */

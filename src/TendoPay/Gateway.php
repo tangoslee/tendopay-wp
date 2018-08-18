@@ -131,21 +131,21 @@ class Gateway extends WC_Payment_Gateway {
 		}
 
 		$redirect_args = [
-			'amount'                => (int) $order->get_total(),
-			'authorisation_token'   => $auth_token,
-			'customer_reference_1'  => (string) $order->get_id(),
-			'customer_reference_2'  => (string) $order->get_order_key(),
-			'redirect_url'          => get_site_url( get_current_blog_id(), 'tendopay-result' ),
-			'tendo_pay_merchant_id' => (string) $this->get_option( 'tendo_pay_merchant_id' ),
-			'vendor'                => get_bloginfo( 'blogname' )
+			Constants::AMOUNT_PARAM       => (int) $order->get_total(),
+			Constants::AUTH_TOKEN_PARAM   => $auth_token,
+			Constants::ORDER_ID_PARAM     => (string) $order->get_id(),
+			Constants::ORDER_KEY_PARAM    => (string) $order->get_order_key(),
+			Constants::REDIRECT_URL_PARAM => get_site_url( get_current_blog_id(), 'tendopay-result' ),
+			Constants::VENDOR_ID_PARAM    => (string) $this->get_option( 'tendo_pay_merchant_id' ),
+			Constants::VENDOR_PARAM       => get_bloginfo( 'blogname' )
 		];
 
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args', $redirect_args, $order, $this,
 			$auth_token );
 
-		$hash_calc             = new Hash_Calculator( $this->get_option( 'tendo_secret' ) );
-		$redirect_args_hash    = $hash_calc->calculate( $redirect_args );
-		$redirect_args['hash'] = $redirect_args_hash;
+		$hash_calc                              = new Hash_Calculator( $this->get_option( 'tendo_secret' ) );
+		$redirect_args_hash                     = $hash_calc->calculate( $redirect_args );
+		$redirect_args[ Constants::HASH_PARAM ] = $redirect_args_hash;
 
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );

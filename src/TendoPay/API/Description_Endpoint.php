@@ -53,10 +53,10 @@ class Description_Endpoint {
 
 		$caller   = new Endpoint_Caller();
 		$response = $caller->do_call( Constants::get_description_endpoint_uri(), [
-			'authorisation_token'  => $authorization_token,
-			'customer_reference_1' => (string) $order->get_id(),
-			'customer_reference_2' => $order->get_order_key(),
-			'description'          => json_encode( $order_details ),
+			Constants::AUTH_TOKEN_PARAM => $authorization_token,
+			Constants::ORDER_ID_PARAM   => (string) $order->get_id(),
+			Constants::ORDER_KEY_PARAM  => $order->get_order_key(),
+			Constants::DESC_PARAM       => json_encode( $order_details ),
 		] );
 		$response = apply_filters( 'tendopay_description_response', $response );
 

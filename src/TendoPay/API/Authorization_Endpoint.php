@@ -37,9 +37,9 @@ class Authorization_Endpoint {
 		$caller = new Endpoint_Caller();
 
 		$data = [
-			'amount'               => (int) ( $order->get_total() + $order->get_total_tax() ),
-			'customer_reference_1' => (string) $order->get_id(),
-			'customer_reference_2' => $order->get_order_key()
+			Constants::AMOUNT_PARAM    => (int) ( $order->get_total() + $order->get_total_tax() ),
+			Constants::ORDER_ID_PARAM  => (string) $order->get_id(),
+			Constants::ORDER_KEY_PARAM => $order->get_order_key()
 		];
 		$data = apply_filters( 'tendopay_request_token_data', $data, $order );
 

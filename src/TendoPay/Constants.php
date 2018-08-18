@@ -23,8 +23,8 @@ class Constants {
 	const REDIRECT_URL_PATTERN = '^tendopay-result/?';
 
 	const HASH_ALGORITHM = 'sha256';
-	const BASE_API_URL = 'http://alpha.tendopay.ph';
 
+	const BASE_API_URL = 'http://alpha.tendopay.ph';
 	const SANDBOX_BASE_API_URL = 'http://alpha.tendopay.ph';
 
 	const REDIRECT_URI = 'http://alpha.tendopay.ph/payments/authorise';
@@ -40,6 +40,52 @@ class Constants {
 	const SANDBOX_AUTHORIZATION_ENDPOINT_URI = 'payments/api/v1/authTokenRequest';
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const SANDBOX_BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
+
+	/**
+	 * Below constant names are used as keys of data send to or received from TP API
+	 */
+	const AMOUNT_PARAM = 'amount';
+	const AUTH_TOKEN_PARAM = 'authorisation_token';
+	const ORDER_ID_PARAM = 'customer_reference_1';
+	const ORDER_KEY_PARAM = 'customer_reference_2';
+	const REDIRECT_URL_PARAM = 'redirect_url';
+	const VENDOR_ID_PARAM = 'tendo_pay_merchant_id';
+	const VENDOR_PARAM = 'vendor';
+	const HASH_PARAM = 'hash';
+	const DISPOSITION_PARAM = 'disposition';
+	const TRANSACTION_NO_PARAM = 'tendo_pay_transaction_number';
+	const VERIFICATION_TOKEN_PARAM = 'verification_token';
+	const DESC_PARAM = 'description';
+
+	/**
+	 * Below constants are the keys of description object that is being sent during request to Description Endpoint
+	 */
+	const ITEMS_DESC_PROPNAME = 'items';
+	const META_DESC_PROPNAME = 'meta';
+	const ORDER_DESC_PROPNAME = 'order';
+
+	/**
+	 * Below constants are the keys of description object's line items that are being sent during request to Description Endpoint
+	 */
+	const TITLE_ITEM_PROPNAME = 'title';
+	const DESC_ITEM_PROPNAME = 'description';
+	const SKU_ITEM_PROPNAME = 'SKU';
+	const PRICE_ITEM_PROPNAME = 'price';
+
+	/**
+	 * Below constants are the keys of description object's meta info that is being sent during request to Description Endpoint
+	 */
+	const CURRENCY_META_PROPNAME = 'currency';
+	const THOUSAND_SEP_META_PROPNAME = 'thousand_separator';
+	const DECIMAL_SEP_META_PROPNAME = 'decimal_separator';
+	const VERSION_META_PROPNAME = 'version';
+
+	/**
+	 * Below constants are the keys of description object's order details that are being sent during request to Description Endpoint
+	 */
+	const ID_ORDER_PROPNAME = 'id';
+	const SUBTOTAL_ORDER_PROPNAME = 'subtotal';
+	const TOTAL_ORDER_PROPNAME = 'total';
 
 	/**
 	 * Gets the hash algorithm.

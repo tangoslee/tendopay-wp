@@ -81,12 +81,12 @@ class Endpoint_Caller {
 	 */
 	public function do_call( $url, array $data ) {
 		$data = wp_parse_args( $data, [
-			'tendo_pay_merchant_id' => $this->tendopay_merchant_id,
+			Constants::VENDOR_ID_PARAM => $this->tendopay_merchant_id,
 		] );
 		$data = apply_filters( 'tendopay_endpoint_call_data', $data, $this );
 
-		$data['hash'] = $this->hash_calculator->calculate( $data );
-		$data         = apply_filters( 'tendopay_endpoint_call_data_after_hash', $data, $this );
+		$data[ Constants::HASH_PARAM ] = $this->hash_calculator->calculate( $data );
+		$data                          = apply_filters( 'tendopay_endpoint_call_data_after_hash', $data, $this );
 
 		$headers = [
 			'headers' => [
