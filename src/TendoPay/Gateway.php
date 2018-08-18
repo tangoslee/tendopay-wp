@@ -46,7 +46,7 @@ class Gateway extends WC_Payment_Gateway {
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
 		if ( $payment_initiated ) {
-			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've aready initiated the payment with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to conitnue?", 'tendopay' );
+			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've aready initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to conitnue?", 'tendopay' );
 
 			$notices = wc_get_notices();
 			if ( isset( $notices['notice'] ) && ! empty( $notices['notice'] ) ) {
