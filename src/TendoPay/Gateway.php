@@ -21,6 +21,7 @@ use \WC_Order;
  * @package TendoPay
  */
 class Gateway extends WC_Payment_Gateway {
+	const TENDOPAY_PAYMENT_INITIATED_KEY = '_tendopay_payment_initiated';
 	/**
 	 * Unique ID of the gateway.
 	 */
@@ -36,9 +37,27 @@ class Gateway extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title        = $this->get_option( 'method_title' );
-		$this->method_title = $this->get_option( 'method_title' );
-		$this->description  = $this->get_option( 'method_description' );
+		$this->title             = $this->get_option( 'method_title' );
+		$this->method_title      = $this->get_option( 'method_title' );
+		$this->description       = $this->get_option( 'method_description' );
+		$this->order_button_text = __( 'Continue to payment', 'tendopay' );
+
+		$order_id          = absint( get_query_var( 'order-pay' ) );
+		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
+
+		if ( $payment_initiated ) {
+			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've aready initiated the payment with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to conitnue?", 'tendopay' );
+
+			$notices = wc_get_notices();
+			if ( isset( $notices['notice'] ) && ! empty( $notices['notice'] ) ) {
+				$payment_initiated_notice .= "<br><br>";
+			} else {
+				$notices['notice'] = [];
+			}
+
+			array_unshift( $notices['notice'], $payment_initiated_notice );
+			wc_set_notices( $notices );
+		}
 
 		$this->view_transaction_url = Constants::get_view_uri_pattern();
 
@@ -160,6 +179,8 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
 		$redirect_url = apply_filters( 'tendopay_process_payment_redirect_url', $redirect_url, $redirect_args,
 			$order, $this, $auth_token );
+
+		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
 		return array(
 			'result'   => 'success',
