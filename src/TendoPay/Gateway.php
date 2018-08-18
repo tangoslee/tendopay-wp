@@ -43,6 +43,29 @@ class Gateway extends WC_Payment_Gateway {
 		$this->order_button_text = apply_filters( 'tendopay_order_button_text',
 			__( 'Buy now, pay later with TendoPay', 'tendopay' ) );
 
+		$this->maybe_add_payment_initiated_notice();
+		add_action( 'before_woocommerce_pay', [ $this, 'maybe_add_payment_failed_notice' ] );
+
+		$this->view_transaction_url = Constants::get_view_uri_pattern();
+
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
+			$this,
+			'process_admin_options'
+		) );
+	}
+
+	public function maybe_add_payment_failed_notice() {
+		$payment_failed = $_GET[ Constants::PAYMANET_FAILED_QUERY_PARAM ];
+
+		if ( $payment_failed ) {
+			$payment_failed_notice =
+				__( "The payment attempt with TendoPay has failed. Please try again or choose other payment method.",
+					'tendopay' );
+			wc_print_notice( $payment_failed_notice, 'error' );
+		}
+	}
+
+	private function maybe_add_payment_initiated_notice() {
 		$order_id          = absint( get_query_var( 'order-pay' ) );
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
@@ -59,13 +82,6 @@ class Gateway extends WC_Payment_Gateway {
 			array_unshift( $notices['notice'], $payment_initiated_notice );
 			wc_set_notices( $notices );
 		}
-
-		$this->view_transaction_url = Constants::get_view_uri_pattern();
-
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
-			$this,
-			'process_admin_options'
-		) );
 	}
 
 	/**
@@ -182,6 +198,7 @@ class Gateway extends WC_Payment_Gateway {
 			$order, $this, $auth_token );
 
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
+		wc_clear_notices();
 
 		return array(
 			'result'   => 'success',

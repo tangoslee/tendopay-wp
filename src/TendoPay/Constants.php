@@ -20,6 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package TendoPay\API
  */
 class Constants {
+	const PAYMANET_FAILED_QUERY_PARAM = 'tendopay_payment_failed';
+
 	const REDIRECT_URL_PATTERN = '^tendopay-result/?';
 
 	const HASH_ALGORITHM = 'sha256';
