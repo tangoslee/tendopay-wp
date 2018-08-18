@@ -124,7 +124,8 @@ class Woocommerce_Order_Description_Retriever {
 	}
 
 	private function create_order_details() {
-		$subtotal_with_shipping = ( $this->order->get_subtotal() + (float) $this->order->get_shipping_total() + $this->order->get_total_discount( true ) );
+		$subtotal_with_shipping = ( $this->order->get_total() - $this->order->get_total_tax()
+		                            + $this->order->get_total_discount( true ) );
 
 		return apply_filters( 'tendopay_description_meta', [
 			Constants::ID_ORDER_PROPNAME       => $this->order->get_id(),
