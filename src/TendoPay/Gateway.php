@@ -40,7 +40,8 @@ class Gateway extends WC_Payment_Gateway {
 		$this->title             = $this->get_option( 'method_title' );
 		$this->method_title      = $this->get_option( 'method_title' );
 		$this->description       = $this->get_option( 'method_description' );
-		$this->order_button_text = __( 'Continue to payment', 'tendopay' );
+		$this->order_button_text = apply_filters( 'tendopay_order_button_text',
+			__( 'Buy now, pay later with TendoPay', 'tendopay' ) );
 
 		$order_id          = absint( get_query_var( 'order-pay' ) );
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
