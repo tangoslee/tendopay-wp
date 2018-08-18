@@ -6,7 +6,7 @@
  * Time: 06:35
  */
 
-namespace Tendopay;
+namespace TendoPay;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -14,14 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WC_Order;
 use WC_Order_Item;
-use WC_Order_Item_Product;
 use WC_Product;
 
 /**
  * This class helps converting woocommerce order into an array, that will is later converted into JSON used for
  * description endpoint.
  *
- * @package Tendopay
+ * @package TendoPay
  */
 class Woocommerce_Order_Description_Retriever {
 	/** @var WC_Order $order */

@@ -6,7 +6,7 @@
  * Time: 13:27
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Wrapper class for response code and body from the API.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Response {
 	/**

@@ -6,20 +6,20 @@
  * Time: 06:10
  */
 
-namespace Tendopay;
+namespace TendoPay;
 
-use Tendopay\API\Authorization_Endpoint;
-use Tendopay\API\Description_Endpoint;
-use Tendopay\API\Hash_Calculator;
-use Tendopay\API\Tendopay_API;
-use Tendopay\Exceptions\TendoPay_Integration_Exception;
+use TendoPay\API\Authorization_Endpoint;
+use TendoPay\API\Description_Endpoint;
+use TendoPay\API\Hash_Calculator;
+use TendoPay\API\Tendopay_API;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
 
 /**
  * This class implements the woocommerce gateway mechanism.
  *
- * @package Tendopay
+ * @package TendoPay
  */
 class Gateway extends WC_Payment_Gateway {
 	/**
@@ -57,26 +57,26 @@ class Gateway extends WC_Payment_Gateway {
 			'enabled'               => array(
 				'title'   => __( 'Enable/Disable', 'tendopay' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable Tendopay Integration', 'tendopay' ),
+				'label'   => __( 'Enable TendoPay Integration', 'tendopay' ),
 				'default' => 'yes'
 			),
 			'method_title'          => array(
 				'title'       => __( 'Payment gateway title', 'tendopay' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'tendopay' ),
-				'default'     => __( 'Pay with Tendopay', 'tendopay' ),
+				'default'     => __( 'Pay with TendoPay', 'tendopay' ),
 				'desc_tip'    => true,
 			),
 			'method_description'    => array(
 				'title'       => __( 'Payment method description', 'tendopay' ),
-				'description' => __( 'Additional information displayed to the customer after selecting Tendopay method', 'tendopay' ),
+				'description' => __( 'Additional information displayed to the customer after selecting TendoPay method', 'tendopay' ),
 				'type'        => 'textarea',
 				'default'     => '',
 				'desc_tip'    => true,
 			),
 			'tendo_sandbox_enabled' => array(
 				'title'       => __( 'Enable SANDBOX', 'tendopay' ),
-				'description' => __( 'Enable SANDBOX if you want to test integration with Tendopay without real transactions.', 'tendopay' ),
+				'description' => __( 'Enable SANDBOX if you want to test integration with TendoPay without real transactions.', 'tendopay' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -151,10 +151,7 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
-		wc_reduce_stock_levels( $order->get_id() );
-
 		global $woocommerce;
-		$woocommerce->cart->empty_cart();
 
 		$redirect_args = urlencode_deep( $redirect_args );
 

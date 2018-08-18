@@ -6,10 +6,10 @@
  * Time: 05:59
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 
-use Tendopay\Gateway;
+use TendoPay\Gateway;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Configuration class.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Tendopay_API {
 	const REDIRECT_URL_PATTERN = '^tendopay-result/?';

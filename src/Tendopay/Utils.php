@@ -6,7 +6,7 @@
  * Time: 07:26
  */
 
-namespace Tendopay;
+namespace TendoPay;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Utils class to provide utility methods used in the plugin.
  * 
- * @package Tendopay
+ * @package TendoPay
  */
 class Utils {
 	/**

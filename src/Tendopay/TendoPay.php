@@ -7,19 +7,19 @@
  * Time: 22:03
  */
 
-namespace Tendopay;
+namespace TendoPay;
 
-use Tendopay\API\Tendopay_API;
-use Tendopay\API\Verification_Endpoint;
+use TendoPay\API\Tendopay_API;
+use TendoPay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
 /**
- * Class Tendopay
- * @package Tendopay
+ * Class TendoPay
+ * @package TendoPay
  */
-class Tendopay {
+class TendoPay {
 	/**
-	 * @var Tendopay $instance the only instance of this class
+	 * @var TendoPay $instance the only instance of this class
 	 */
 	private static $instance;
 
@@ -33,11 +33,11 @@ class Tendopay {
 	/**
 	 * Returns the only instance of this class. If instance wasn't created yet - it creates the instance before returning.
 	 *
-	 * @return Tendopay the only instance of this class
+	 * @return TendoPay the only instance of this class
 	 */
 	public static function get_instance() {
 		if ( self::$instance === null ) {
-			self::$instance = new Tendopay();
+			self::$instance = new TendoPay();
 		}
 
 		return self::$instance;
@@ -124,8 +124,8 @@ class Tendopay {
 			error_log( $exception->getMessage() );
 			error_log( $exception->getTraceAsString() );
 			wp_die( new \WP_Error( 'tendopay-integration-error',
-				__( 'Could not communicate with Tendopay properly', 'tendopay' ) ),
-				__( 'Could not communicate with Tendopay properly', 'tendopay' ), 403 );
+				__( 'Could not communicate with TendoPay properly', 'tendopay' ) ),
+				__( 'Could not communicate with TendoPay properly', 'tendopay' ), 403 );
 		}
 
 		if ( $payment_completed ) {
@@ -142,7 +142,7 @@ class Tendopay {
 	/**
 	 * @hook woocommerce_payment_gateways 10
 	 *
-	 * Registers Tendopay gateway in the system.
+	 * Registers TendoPay gateway in the system.
 	 *
 	 * @param array $methods Other methods registered in the system
 	 *

@@ -6,14 +6,14 @@
  * Time: 20:26
  */
 
-namespace Tendopay;
+namespace TendoPay;
 
-use Tendopay\API\Tendopay_API;
+use TendoPay\API\Tendopay_API;
 
 /**
  * This class registers new custom (nice) link used for handling redirection from TendoPay.
  *
- * @package Tendopay
+ * @package TendoPay
  */
 class Redirect_Url_Rewriter {
 	/**

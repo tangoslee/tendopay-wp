@@ -1,6 +1,6 @@
 {
-  "name": "Tendopay Wordpres Plugin",
-  "description": "Tendopay Wordpres Plugin",
+  "name": "TendoPay Wordpres Plugin",
+  "description": "TendoPay Wordpres Plugin",
   "require": {
     "guzzlehttp/guzzle": "~6.0"
   }

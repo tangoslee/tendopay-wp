@@ -6,10 +6,10 @@
  * Time: 06:49
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 use GuzzleHttp\Client;
-use Tendopay\Gateway;
+use TendoPay\Gateway;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class Endpoint_Caller
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Endpoint_Caller {
 	/**
@@ -92,7 +92,7 @@ class Endpoint_Caller {
 				'Authorization' => 'Bearer ' . $this->get_bearer_token(),
 				'Accept'        => 'application/json',
 				'Content-Type'  => 'application/json',
-				'X-Using'       => 'Tendopay Woocommerce Plugin',
+				'X-Using'       => 'TendoPay Woocommerce Plugin',
 			],
 			'json'    => $data
 		];
@@ -137,7 +137,7 @@ class Endpoint_Caller {
 				'headers' => [
 					'Accept'       => 'application/json',
 					'Content-Type' => 'application/json',
-					'X-Using'      => 'Tendopay Woocommerce Plugin'
+					'X-Using'      => 'TendoPay Woocommerce Plugin'
 				],
 				'json'    => [
 					"grant_type"    => "client_credentials",

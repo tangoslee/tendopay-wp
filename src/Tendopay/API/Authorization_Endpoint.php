@@ -6,9 +6,9 @@
  * Time: 06:21
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
-use Tendopay\Exceptions\TendoPay_Integration_Exception;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * This class is responsible for communication with the Authorization Endpoint of TendoPay API.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Authorization_Endpoint {
 	/**

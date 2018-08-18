@@ -6,7 +6,7 @@
  * Time: 13:25
  */
 
-namespace Tendopay\Exceptions;
+namespace TendoPay\Exceptions;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class TendoPay_Integration_Exception
- * @package Tendopay\Exceptions
+ * @package TendoPay\Exceptions
  */
 class TendoPay_Integration_Exception extends \Exception {
 	/**

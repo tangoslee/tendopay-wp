@@ -6,11 +6,11 @@
  * Time: 06:28
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 
-use Tendopay\Exceptions\TendoPay_Integration_Exception;
-use Tendopay\Woocommerce_Order_Description_Retriever;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
+use TendoPay\Woocommerce_Order_Description_Retriever;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles API calls to the Description Endpoint. It is used to send descriptions of items being paid by TendoPay.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Description_Endpoint {
 	/**

@@ -6,7 +6,7 @@
  * Time: 15:16
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Provides logic for hash calculation based on the input data. Uses sha256.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Hash_Calculator {
 	/**

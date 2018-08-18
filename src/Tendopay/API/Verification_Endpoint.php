@@ -6,12 +6,12 @@
  * Time: 06:40
  */
 
-namespace Tendopay\API;
+namespace TendoPay\API;
 
 
 use InvalidArgumentException;
-use Tendopay\Exceptions\TendoPay_Integration_Exception;
-use Tendopay\Gateway;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
+use TendoPay\Gateway;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * This class is responsible for communication with the Verification Endpoint of TendoPay API.
  *
- * @package Tendopay\API
+ * @package TendoPay\API
  */
 class Verification_Endpoint {
 	/**
