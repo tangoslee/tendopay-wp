@@ -10,6 +10,7 @@ namespace TendoPay\API;
 
 
 use InvalidArgumentException;
+use TendoPay\Constants;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use TendoPay\Gateway;
 
@@ -63,7 +64,7 @@ class Verification_Endpoint {
 		$verification_data = apply_filters( 'tendopay_verification_data', $verification_data );
 
 		$endpoint_caller = new Endpoint_Caller();
-		$response        = $endpoint_caller->do_call( Tendopay_API::get_verification_endpoint_uri(),
+		$response        = $endpoint_caller->do_call( Constants::get_verification_endpoint_uri(),
 			$verification_data );
 
 		$response = apply_filters( 'tendopay_verification_endpoint_response', $response );

@@ -9,6 +9,7 @@
 namespace TendoPay\API;
 
 
+use TendoPay\Constants;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use TendoPay\Woocommerce_Order_Description_Retriever;
 
@@ -51,7 +52,7 @@ class Description_Endpoint {
 		}
 
 		$caller   = new Endpoint_Caller();
-		$response = $caller->do_call( Tendopay_API::get_description_endpoint_uri(), [
+		$response = $caller->do_call( Constants::get_description_endpoint_uri(), [
 			'authorisation_token'  => $authorization_token,
 			'customer_reference_1' => (string) $order->get_id(),
 			'customer_reference_2' => $order->get_order_key(),

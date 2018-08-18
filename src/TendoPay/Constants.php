@@ -6,8 +6,7 @@
  * Time: 05:59
  */
 
-namespace TendoPay\API;
-
+namespace TendoPay;
 
 use TendoPay\Gateway;
 
@@ -20,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @package TendoPay\API
  */
-class Tendopay_API {
+class Constants {
 	const REDIRECT_URL_PATTERN = '^tendopay-result/?';
 
 	const HASH_ALGORITHM = 'sha256';

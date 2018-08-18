@@ -11,7 +11,6 @@ namespace TendoPay;
 use TendoPay\API\Authorization_Endpoint;
 use TendoPay\API\Description_Endpoint;
 use TendoPay\API\Hash_Calculator;
-use TendoPay\API\Tendopay_API;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use \WC_Payment_Gateway;
 use \WC_Order;
@@ -41,7 +40,7 @@ class Gateway extends WC_Payment_Gateway {
 		$this->method_title = $this->get_option( 'method_title' );
 		$this->description  = $this->get_option( 'method_description' );
 
-		$this->view_transaction_url = Tendopay_API::get_view_uri_pattern();
+		$this->view_transaction_url = Constants::get_view_uri_pattern();
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
 			$this,
@@ -151,11 +150,14 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
+		wc_reduce_stock_levels( $order->get_id() );
+
 		global $woocommerce;
+		$woocommerce->cart->empty_cart();
 
 		$redirect_args = urlencode_deep( $redirect_args );
 
-		$redirect_url = add_query_arg( $redirect_args, Tendopay_API::get_redirect_uri() );
+		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
 		$redirect_url = apply_filters( 'tendopay_process_payment_redirect_url', $redirect_url, $redirect_args,
 			$order, $this, $auth_token );
 

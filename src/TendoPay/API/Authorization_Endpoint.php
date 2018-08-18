@@ -8,6 +8,7 @@
 
 namespace TendoPay\API;
 
+use TendoPay\Constants;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -42,7 +43,7 @@ class Authorization_Endpoint {
 		];
 		$data = apply_filters( 'tendopay_request_token_data', $data, $order );
 
-		$response = $caller->do_call( Tendopay_API::get_authorization_endpoint_uri(), $data );
+		$response = $caller->do_call( Constants::get_authorization_endpoint_uri(), $data );
 
 		$is_valid_response = $response->get_code() !== 200 || empty( $response->get_body() );
 		$is_valid_response = apply_filters( 'tendopay_request_token_response', $is_valid_response, $order, $data );

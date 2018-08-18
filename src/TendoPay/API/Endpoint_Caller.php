@@ -9,6 +9,7 @@
 namespace TendoPay\API;
 
 use GuzzleHttp\Client;
+use TendoPay\Constants;
 use TendoPay\Gateway;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -65,7 +66,7 @@ class Endpoint_Caller {
 		$this->hash_calculator      = new Hash_Calculator( $this->secret );
 
 		$this->client = new Client( [
-			'base_uri' => Tendopay_API::BASE_API_URL
+			'base_uri' => Constants::BASE_API_URL
 		] );
 	}
 
@@ -147,7 +148,7 @@ class Endpoint_Caller {
 			];
 			$headers = apply_filters( 'tendopay_bearer_token_request_headers', $headers, $this );
 
-			$response = $this->client->request( 'POST', Tendopay_API::get_bearer_token_endpoint_uri(), $headers );
+			$response = $this->client->request( 'POST', Constants::get_bearer_token_endpoint_uri(), $headers );
 			$response = apply_filters( 'tendopay_bearer_token_request_response', $response );
 
 			$response_body = (string) $response->getBody();

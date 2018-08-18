@@ -8,8 +8,6 @@
 
 namespace TendoPay;
 
-use TendoPay\API\Tendopay_API;
-
 /**
  * This class registers new custom (nice) link used for handling redirection from TendoPay.
  *
@@ -50,7 +48,7 @@ class Redirect_Url_Rewriter {
 		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );
 		$url = apply_filters( 'tendopay_action_url', $url );
 
-		$redirect_url_pattern = apply_filters( 'tendopay_redirect_url_pattern', Tendopay_API::REDIRECT_URL_PATTERN );
+		$redirect_url_pattern = apply_filters( 'tendopay_redirect_url_pattern', Constants::REDIRECT_URL_PATTERN );
 		add_rewrite_rule( $redirect_url_pattern, $url, 'top' );
 	}
 }

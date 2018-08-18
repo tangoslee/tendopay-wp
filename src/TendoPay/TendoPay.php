@@ -9,7 +9,6 @@
 
 namespace TendoPay;
 
-use TendoPay\API\Tendopay_API;
 use TendoPay\API\Verification_Endpoint;
 use \WC_Order_Factory;
 
@@ -61,7 +60,7 @@ class TendoPay {
 	public static function uninstall() {
 		/** @var \WP_Rewrite $wp_rewrite */
 		global $wp_rewrite;
-		unset( $wp_rewrite->non_wp_rules[ Tendopay_API::REDIRECT_URL_PATTERN ] );
+		unset( $wp_rewrite->non_wp_rules[ Constants::REDIRECT_URL_PATTERN ] );
 		flush_rewrite_rules();
 	}
 

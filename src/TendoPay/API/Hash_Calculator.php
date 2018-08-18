@@ -9,6 +9,8 @@
 namespace TendoPay\API;
 
 
+use TendoPay\Constants;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
@@ -43,7 +45,7 @@ class Hash_Calculator {
 	 * @param array $data input data based on which the hash will be calculated
 	 *
 	 * @return false|string The hash in string. False if hash algorithm defined in
-	 *         {@link Tendopay_API::get_hash_algorithm()} is unknown or invalid.
+	 *         {@link Constants::get_hash_algorithm()} is unknown or invalid.
 	 */
 	public function calculate( array $data ) {
 		$data = array_map( function ( $value ) {
@@ -62,6 +64,6 @@ class Hash_Calculator {
 
 		$message = join( "", $data );
 
-		return hash_hmac( Tendopay_API::get_hash_algorithm(), $message, $this->secret, false );
+		return hash_hmac( Constants::get_hash_algorithm(), $message, $this->secret, false );
 	}
 }
