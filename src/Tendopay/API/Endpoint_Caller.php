@@ -120,7 +120,7 @@ class Endpoint_Caller {
 	private function get_bearer_token() {
 		self::$bearer_token = apply_filters( 'tendopay_bearer_token', self::$bearer_token );
 
-		if ( self::$bearer_token !== null ) {
+		if ( self::$bearer_token === null ) {
 			self::$bearer_token = get_option( 'tendopay_bearer_token' );
 		}
 
@@ -130,8 +130,9 @@ class Endpoint_Caller {
 		}
 
 		$current_timestamp = new \DateTime( 'now' );
+		$current_timestamp = $current_timestamp->getTimestamp();
 
-		if ( $bearer_expiration_timestamp <= $current_timestamp->getTimestamp() - 30 ) {
+		if ( $bearer_expiration_timestamp <= $current_timestamp - 30 ) {
 			$headers = [
 				'headers' => [
 					'Accept'       => 'application/json',
