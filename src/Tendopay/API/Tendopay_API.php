@@ -121,6 +121,6 @@ class Tendopay_API {
 	private static function is_sandbox_enabled() {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 
-		return $gateway_options['tendo_sandbox_enabled'] === 'yes';
+		return apply_filters( 'tendopay_sandbox_enabled', $gateway_options['tendo_sandbox_enabled'] === 'yes' );
 	}
 }

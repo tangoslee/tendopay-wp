@@ -49,10 +49,14 @@ class Hash_Calculator {
 		$data = array_map( function ( $value ) {
 			return trim( $value );
 		}, $data );
+		$data = apply_filters( 'tendopay_hash_calculator_data', $data );
 
-		$data = array_filter( $data, function ( $value, $key ) {
-			return ! in_array( $key, $this->hash_keys_exclusion_list ) && ! empty( $value );
+		$exclusion_list = apply_filters( 'tendopay_hash_calculator_exclusion_list', $this->hash_keys_exclusion_list );
+
+		$data = array_filter( $data, function ( $value, $key ) use ( $exclusion_list ) {
+			return ! in_array( $key, $exclusion_list ) && ! empty( $value );
 		}, ARRAY_FILTER_USE_BOTH );
+		$data = apply_filters( 'tendopay_hash_calculator_filter_data', $data );
 
 		ksort( $data );
 

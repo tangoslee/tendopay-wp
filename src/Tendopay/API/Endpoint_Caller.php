@@ -82,10 +82,12 @@ class Endpoint_Caller {
 		$data = wp_parse_args( $data, [
 			'tendo_pay_merchant_id' => $this->tendopay_merchant_id,
 		] );
+		$data = apply_filters( 'tendopay_endpoint_call_data', $data, $this );
 
 		$data['hash'] = $this->hash_calculator->calculate( $data );
+		$data         = apply_filters( 'tendopay_endpoint_call_data_after_hash', $data, $this );
 
-		$response = $this->client->request( 'POST', $url, [
+		$headers = [
 			'headers' => [
 				'Authorization' => 'Bearer ' . $this->get_bearer_token(),
 				'Accept'        => 'application/json',
@@ -93,7 +95,11 @@ class Endpoint_Caller {
 				'X-Using'       => 'Tendopay Woocommerce Plugin',
 			],
 			'json'    => $data
-		] );
+		];
+		$headers = apply_filters( 'tendopay_endpoint_call_headers', $headers, $data, $this );
+
+		$response = $this->client->request( 'POST', $url, $headers );
+		$response = apply_filters( 'tendopay_endpoint_call_response', $response );
 
 		return new Response( $response->getStatusCode(), $response->getBody() );
 	}
@@ -112,6 +118,8 @@ class Endpoint_Caller {
 	 * thrown by guzzle http client)
 	 */
 	private function get_bearer_token() {
+		self::$bearer_token = apply_filters( 'tendopay_bearer_token', self::$bearer_token );
+
 		if ( self::$bearer_token !== null ) {
 			self::$bearer_token = get_option( 'tendopay_bearer_token' );
 		}
@@ -124,7 +132,7 @@ class Endpoint_Caller {
 		$current_timestamp = new \DateTime( 'now' );
 
 		if ( $bearer_expiration_timestamp <= $current_timestamp->getTimestamp() - 30 ) {
-			$response = $this->client->request( 'POST', Tendopay_API::get_bearer_token_endpoint_uri(), [
+			$headers = [
 				'headers' => [
 					'Accept'       => 'application/json',
 					'Content-Type' => 'application/json',
@@ -135,7 +143,11 @@ class Endpoint_Caller {
 					"client_id"     => $this->api_client_id,
 					"client_secret" => $this->api_client_secret
 				]
-			] );
+			];
+			$headers = apply_filters( 'tendopay_bearer_token_request_headers', $headers, $this );
+
+			$response = $this->client->request( 'POST', Tendopay_API::get_bearer_token_endpoint_uri(), $headers );
+			$response = apply_filters( 'tendopay_bearer_token_request_response', $response );
 
 			$response_body = (string) $response->getBody();
 			$response_body = json_decode( $response_body );

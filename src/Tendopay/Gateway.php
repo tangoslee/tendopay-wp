@@ -126,7 +126,7 @@ class Gateway extends WC_Payment_Gateway {
 			$auth_token = Authorization_Endpoint::request_token( $order );
 			Description_Endpoint::set_description( $auth_token, $order );
 		} catch ( \Exception $exception ) {
-			error_log($exception);
+			error_log( $exception );
 			throw new TendoPay_Integration_Exception(
 				__( 'Could not communicate with TendoPay', 'tendopay' ), $exception );
 		}
@@ -141,9 +141,15 @@ class Gateway extends WC_Payment_Gateway {
 			'vendor'                => get_bloginfo( 'blogname' )
 		];
 
+		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args', $redirect_args, $order, $this,
+			$auth_token );
+
 		$hash_calc             = new Hash_Calculator( $this->get_option( 'tendo_secret' ) );
 		$redirect_args_hash    = $hash_calc->calculate( $redirect_args );
 		$redirect_args['hash'] = $redirect_args_hash;
+
+		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
+			$this, $auth_token );
 
 		wc_reduce_stock_levels( $order->get_id() );
 
@@ -153,6 +159,8 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = urlencode_deep( $redirect_args );
 
 		$redirect_url = add_query_arg( $redirect_args, Tendopay_API::get_redirect_uri() );
+		$redirect_url = apply_filters( 'tendopay_process_payment_redirect_url', $redirect_url, $redirect_args,
+			$order, $this, $auth_token );
 
 		return array(
 			'result'   => 'success',

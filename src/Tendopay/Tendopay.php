@@ -94,7 +94,8 @@ class Tendopay {
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
 	function handle_redirect_from_tendopay() {
-		$posted_data = $_REQUEST;
+		$posted_data = apply_filters( 'tendopay_posted_data', $_REQUEST );
+
 		if ( isset( $posted_data['action'] ) ) {
 			unset( $posted_data['action'] );
 		}

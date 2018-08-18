@@ -67,7 +67,7 @@ class Woocommerce_Order_Description_Retriever {
 			$order_details['items'][] = $this->create_line_item( $item );
 		}
 
-		return $order_details;
+		return apply_filters( 'tendopay_order_details', $order_details, $this->order );
 	}
 
 	/**
@@ -93,7 +93,7 @@ class Woocommerce_Order_Description_Retriever {
 		/** @var WC_Product $product */
 		$product = wc_get_product( $line_item_data['product_id'] );
 
-		return [
+		$description_line_item = [
 			'id'          => $line_item_data['id'],
 			'title'       => $line_item_data['name'],
 			'description' => $product->get_description(),
@@ -101,5 +101,7 @@ class Woocommerce_Order_Description_Retriever {
 			'price'       => $line_item_data['total'] + $line_item_data['total_tax'],
 			'quantity'    => $line_item_data['quantity'],
 		];
+
+		return apply_filters( 'tendopay_description_line_item', $description_line_item, $line_item );
 	}
 }

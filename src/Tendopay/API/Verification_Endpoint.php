@@ -60,10 +60,13 @@ class Verification_Endpoint {
 			'tendo_pay_transaction_number' => (string) $tendo_pay_transaction_number,
 			'verification_token'           => $verification_token
 		];
+		$verification_data = apply_filters( 'tendopay_verification_data', $verification_data );
 
 		$endpoint_caller = new Endpoint_Caller();
 		$response        = $endpoint_caller->do_call( Tendopay_API::get_verification_endpoint_uri(),
 			$verification_data );
+
+		$response = apply_filters( 'tendopay_verification_endpoint_response', $response );
 
 		if ( $response->get_code() !== 200 ) {
 			throw new TendoPay_Integration_Exception(

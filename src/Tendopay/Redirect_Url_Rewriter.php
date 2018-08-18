@@ -48,7 +48,9 @@ class Redirect_Url_Rewriter {
 	 */
 	public function add_rules() {
 		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );
+		$url = apply_filters( 'tendopay_action_url', $url );
 
-		add_rewrite_rule( Tendopay_API::REDIRECT_URL_PATTERN, $url, 'top' );
+		$redirect_url_pattern = apply_filters( 'tendopay_redirect_url_pattern', Tendopay_API::REDIRECT_URL_PATTERN );
+		add_rewrite_rule( $redirect_url_pattern, $url, 'top' );
 	}
 }

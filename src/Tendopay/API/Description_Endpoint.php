@@ -57,6 +57,7 @@ class Description_Endpoint {
 			'customer_reference_2' => $order->get_order_key(),
 			'description'          => json_encode( $order_details ),
 		] );
+		$response = apply_filters( 'tendopay_description_response', $response );
 
 		if ( $response->get_code() !== 204 ) {
 			throw new TendoPay_Integration_Exception(
