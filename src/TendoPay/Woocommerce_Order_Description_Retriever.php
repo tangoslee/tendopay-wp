@@ -57,16 +57,20 @@ class Woocommerce_Order_Description_Retriever {
 	 * @return array order details in form of an array
 	 */
 	public function get_order_details() {
-		$order_details = [
-			Constants::ITEMS_DESC_PROPNAME => []
-		];
+		$fees_and_items = array_merge(
+			array_values( $this->order->get_fees() ),
+			array_values( $this->order->get_items() )
+		);
 
-		$line_items = $this->order->get_items();
-		foreach ( $line_items as $item ) {
-			$order_details[ Constants::ITEMS_DESC_PROPNAME ][] = $this->create_line_item( $item );
-		}
-
-		return apply_filters( 'tendopay_order_details', $order_details, $this->order );
+		return apply_filters(
+			'tendopay_order_details',
+			[
+				Constants::ITEMS_DESC_PROPNAME => array_map( [ $this, 'create_line_item' ], $fees_and_items ),
+				Constants::META_DESC_PROPNAME  => $this->create_meta(),
+				Constants::ORDER_DESC_PROPNAME => $this->create_order_details()
+			],
+			$this->order
+		);
 	}
 
 	/**
@@ -89,18 +93,43 @@ class Woocommerce_Order_Description_Retriever {
 	private function create_line_item( WC_Order_Item $line_item ) {
 		$line_item_data = $line_item->get_data();
 
-		/** @var WC_Product $product */
-		$product = wc_get_product( $line_item_data['product_id'] );
+		if ( $line_item instanceof \WC_Order_Item_Fee ) {
+			$description = $line_item_data['name'];
+			$sku         = null;
+		} else {
+			/** @var WC_Product $product */
+			$product     = wc_get_product( $line_item_data['product_id'] );
+			$description = $product->get_description();
+			$sku         = $product->get_sku();
+		}
 
-		$description_line_item = [
-			'id'                           => $line_item_data['id'],
-			Constants::TITLE_ITEM_PROPNAME => $line_item_data['name'],
-			Constants::DESC_ITEM_PROPNAME  => $product->get_description(),
-			Constants::SKU_ITEM_PROPNAME   => $product->get_sku(),
-			Constants::PRICE_ITEM_PROPNAME => $line_item_data['total'] + $line_item_data['total_tax'],
-			'quantity'                     => $line_item_data['quantity'],
-		];
+		return apply_filters(
+			'tendopay_description_line_item',
+			[
+				Constants::TITLE_ITEM_PROPNAME => $line_item_data['name'],
+				Constants::DESC_ITEM_PROPNAME  => $description,
+				Constants::SKU_ITEM_PROPNAME   => $sku,
+				Constants::PRICE_ITEM_PROPNAME => $line_item_data['total'] + $line_item_data['total_tax'],
+			],
+			$line_item );
+	}
 
-		return apply_filters( 'tendopay_description_line_item', $description_line_item, $line_item );
+	private function create_meta() {
+		return apply_filters( 'tendopay_description_meta', [
+			Constants::CURRENCY_META_PROPNAME     => get_woocommerce_currency(),
+			Constants::THOUSAND_SEP_META_PROPNAME => wc_get_price_thousand_separator(),
+			Constants::DECIMAL_SEP_META_PROPNAME  => wc_get_price_decimal_separator(),
+			Constants::VERSION_META_PROPNAME      => '1'
+		] );
+	}
+
+	private function create_order_details() {
+		$subtotal_with_shipping = ( $this->order->get_subtotal() + (float) $this->order->get_shipping_total() + $this->order->get_total_discount( true ) );
+
+		return apply_filters( 'tendopay_description_meta', [
+			Constants::ID_ORDER_PROPNAME       => $this->order->get_id(),
+			Constants::SUBTOTAL_ORDER_PROPNAME => $subtotal_with_shipping,
+			Constants::TOTAL_ORDER_PROPNAME    => $this->order->get_total(),
+		] );
 	}
 }
