@@ -46,19 +46,19 @@ class Constants {
 	/**
 	 * Below constant names are used as keys of data send to or received from TP API
 	 */
-	const AMOUNT_PARAM = 'amount';
-	const AUTH_TOKEN_PARAM = 'authorisation_token';
-	const ORDER_ID_PARAM = 'customer_reference_1';
-	const ORDER_KEY_PARAM = 'customer_reference_2';
-	const REDIRECT_URL_PARAM = 'redirect_url';
-	const VENDOR_ID_PARAM = 'tendo_pay_merchant_id';
-	const VENDOR_PARAM = 'vendor';
-	const HASH_PARAM = 'hash';
-	const DISPOSITION_PARAM = 'disposition';
-	const TRANSACTION_NO_PARAM = 'tendo_pay_transaction_number';
-	const VERIFICATION_TOKEN_PARAM = 'verification_token';
-	const DESC_PARAM = 'description';
-	const STATUS_PARAM = 'status';
+	const AMOUNT_PARAM = 'tendopay_amount';
+	const AUTH_TOKEN_PARAM = 'tendopay_authorisation_token';
+	const ORDER_ID_PARAM = 'tendopay_customer_reference_1';
+	const ORDER_KEY_PARAM = 'tendopay_customer_reference_2';
+	const REDIRECT_URL_PARAM = 'tendopay_redirect_url';
+	const VENDOR_ID_PARAM = 'tendopay_tendo_pay_vendor_id';
+	const VENDOR_PARAM = 'tendopay_vendor';
+	const HASH_PARAM = 'tendopay_hash';
+	const DISPOSITION_PARAM = 'tendopay_disposition';
+	const TRANSACTION_NO_PARAM = 'tendopay_transaction_number';
+	const VERIFICATION_TOKEN_PARAM = 'tendopay_verification_token';
+	const DESC_PARAM = 'tendopay_description';
+	const STATUS_PARAM = 'tendopay_status';
 
 	/**
 	 * Below constants are the keys of description object that is being sent during request to Description Endpoint
