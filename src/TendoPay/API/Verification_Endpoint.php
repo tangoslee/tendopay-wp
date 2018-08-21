@@ -77,6 +77,8 @@ class Verification_Endpoint {
 
 		$json = json_decode( $response->get_body() );
 
-		return $json->status === 'success';
+		error_log($response->get_body());
+
+		return $json->{Constants::STATUS_PARAM} === 'success';
 	}
 }

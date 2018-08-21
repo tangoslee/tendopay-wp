@@ -58,6 +58,7 @@ class Constants {
 	const TRANSACTION_NO_PARAM = 'tendo_pay_transaction_number';
 	const VERIFICATION_TOKEN_PARAM = 'verification_token';
 	const DESC_PARAM = 'description';
+	const STATUS_PARAM = 'status';
 
 	/**
 	 * Below constants are the keys of description object that is being sent during request to Description Endpoint
