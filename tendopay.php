@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: TendoPay
-Description: TendoPay is a ‘Buy now. Pay later’ financing platform for online shopping. This plugin allows your ecommerce site to use TendoPay as a payment method.
+Description: TendoPay is a 'Buy now. Pay later' financing platform for online shopping. This plugin allows your ecommerce site to use TendoPay as a payment method.
 Version:     0.1
 Author:      TendoPay
 Author URI:  http://tendopay.ph/

@@ -40,6 +40,23 @@ class Redirect_Url_Rewriter {
 	}
 
 	/**
+	 * Returns the url used for redirection from TendoPay after the payment process is finished (either successfully or
+	 * failed).
+	 *
+	 * Depends on whether or not the .htaccess file is writable, this function will return nice URL or just dirty URL if
+	 * we can't write rewrite rules to .htaccess file.
+	 *
+	 * @return string url for redirection from TendoPay
+	 */
+	public function get_redirect_url() {
+		if ( is_writeable( ABSPATH . '.htaccess' ) ) {
+			return get_site_url( get_current_blog_id(), 'tendopay-result' );
+		} else {
+			return admin_url( 'admin-post.php?action=tendopay-result' );
+		}
+	}
+
+	/**
 	 * @hook init 10
 	 *
 	 * Adds rewrite rules to handle custom link.

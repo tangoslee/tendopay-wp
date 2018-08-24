@@ -171,7 +171,7 @@ class Gateway extends WC_Payment_Gateway {
 			Constants::AUTH_TOKEN_PARAM   => $auth_token,
 			Constants::ORDER_ID_PARAM     => (string) $order->get_id(),
 			Constants::ORDER_KEY_PARAM    => (string) $order->get_order_key(),
-			Constants::REDIRECT_URL_PARAM => get_site_url( get_current_blog_id(), 'tendopay-result' ),
+			Constants::REDIRECT_URL_PARAM => Redirect_Url_Rewriter::get_instance()->get_redirect_url(),
 			Constants::VENDOR_ID_PARAM    => (string) $this->get_option( 'tendo_pay_merchant_id' ),
 			Constants::VENDOR_PARAM       => get_bloginfo( 'blogname' )
 		];

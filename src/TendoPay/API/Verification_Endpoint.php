@@ -57,7 +57,7 @@ class Verification_Endpoint {
 			Constants::ORDER_ID_PARAM           => (string) $order->get_id(),
 			Constants::ORDER_KEY_PARAM          => $order->get_order_key(),
 			Constants::DISPOSITION_PARAM        => $disposition,
-			Constants::VENDOR_ID_PARAM          => (string) $gateway_options[ Constants::VENDOR_ID_PARAM ],
+			Constants::VENDOR_ID_PARAM          => (string) $gateway_options['tendo_pay_merchant_id'],
 			Constants::TRANSACTION_NO_PARAM     => (string) $tendo_pay_transaction_number,
 			Constants::VERIFICATION_TOKEN_PARAM => $verification_token
 		];
@@ -76,8 +76,6 @@ class Verification_Endpoint {
 		}
 
 		$json = json_decode( $response->get_body() );
-
-		error_log($response->get_body());
 
 		return $json->{Constants::STATUS_PARAM} === 'success';
 	}

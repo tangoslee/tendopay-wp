@@ -109,7 +109,7 @@ class TendoPay {
 
 		$gateway_options             = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 		$tendo_pay_merchant_id       = $posted_data[ Constants::VENDOR_ID_PARAM ];
-		$local_tendo_pay_merchant_id = $gateway_options[ Constants::VENDOR_ID_PARAM ];
+		$local_tendo_pay_merchant_id = $gateway_options['tendo_pay_merchant_id'];
 
 		if ( $tendo_pay_merchant_id !== $local_tendo_pay_merchant_id ) {
 			wp_die( new \WP_Error( 'wrong-merchant-id', 'Malformed payload' ),

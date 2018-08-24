@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Utils class to provide utility methods used in the plugin.
- * 
+ *
  * @package TendoPay
  */
 class Utils {
