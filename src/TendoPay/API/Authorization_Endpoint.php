@@ -45,10 +45,10 @@ class Authorization_Endpoint {
 
 		$response = $caller->do_call( Constants::get_authorization_endpoint_uri(), $data );
 
-		$is_valid_response = $response->get_code() !== 200 || empty( $response->get_body() );
+		$is_valid_response = $response->get_code() === 200 && ! empty( $response->get_body() );
 		$is_valid_response = apply_filters( 'tendopay_request_token_response', $is_valid_response, $order, $data );
 
-		if ( $is_valid_response ) {
+		if ( ! $is_valid_response ) {
 			throw new TendoPay_Integration_Exception(
 				__( 'Got return code != 200 or empty body while requesting authorization token from TP',
 					'tendopay' ) );
