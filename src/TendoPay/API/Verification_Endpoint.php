@@ -41,7 +41,7 @@ class Verification_Endpoint {
 		ksort( $data );
 
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
-		$hash_calculator = new Hash_Calculator( $gateway_options['tendo_secret'] );
+		$hash_calculator = new Hash_Calculator( $gateway_options[ Gateway::OPTION_TENDOPAY_SECRET ] );
 
 		$hash = $data[ Constants::HASH_PARAM ];
 
@@ -57,7 +57,7 @@ class Verification_Endpoint {
 			Constants::ORDER_ID_PARAM           => (string) $order->get_id(),
 			Constants::ORDER_KEY_PARAM          => $order->get_order_key(),
 			Constants::DISPOSITION_PARAM        => $disposition,
-			Constants::VENDOR_ID_PARAM          => (string) $gateway_options['tendo_pay_merchant_id'],
+			Constants::VENDOR_ID_PARAM          => (string) $gateway_options[ Gateway::OPTION_TENDOPAY_VENDOR_ID ],
 			Constants::TRANSACTION_NO_PARAM     => (string) $tendo_pay_transaction_number,
 			Constants::VERIFICATION_TOKEN_PARAM => $verification_token
 		];

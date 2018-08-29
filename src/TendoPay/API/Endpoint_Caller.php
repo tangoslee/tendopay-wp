@@ -59,10 +59,10 @@ class Endpoint_Caller {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 
 		// initialize parameters, etc
-		$this->tendopay_merchant_id = $gateway_options['tendo_pay_merchant_id'];
-		$this->secret               = $gateway_options['tendo_secret'];
-		$this->api_client_id        = $gateway_options['tendo_client_id'];
-		$this->api_client_secret    = $gateway_options['tendo_client_secret'];
+		$this->tendopay_merchant_id = $gateway_options[ Gateway::OPTION_TENDOPAY_VENDOR_ID ];
+		$this->secret               = $gateway_options[ Gateway::OPTION_TENDOPAY_SECRET ];
+		$this->api_client_id        = $gateway_options[ Gateway::OPTION_TENDOPAY_CLIENT_ID ];
+		$this->api_client_secret    = $gateway_options[ Gateway::OPTION_TENDOPAY_CLIENT_SECRET ];
 		$this->hash_calculator      = new Hash_Calculator( $this->secret );
 
 		$this->client = new Client( [

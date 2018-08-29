@@ -169,6 +169,7 @@ class Constants {
 	private static function is_sandbox_enabled() {
 		$gateway_options = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 
-		return apply_filters( 'tendopay_sandbox_enabled', $gateway_options['tendo_sandbox_enabled'] === 'yes' );
+		return apply_filters( 'tendopay_sandbox_enabled',
+			$gateway_options[ Gateway::OPTION_TENDOPAY_SANDBOX_ENABLED ] === 'yes' );
 	}
 }
