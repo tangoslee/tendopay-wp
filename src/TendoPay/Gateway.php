@@ -216,4 +216,16 @@ class Gateway extends WC_Payment_Gateway {
 			'redirect' => $redirect_url
 		);
 	}
+
+	/**
+	 * Processes and saves options.
+	 * If there is an error thrown, will continue to save and validate fields, but will leave the erroring field out.
+	 * Additionally it removes the TendoPay bearer token, because some changes may cause it to be invalid.
+	 *
+	 * @return bool was anything saved?
+	 */
+	public function process_admin_options() {
+		delete_option( 'tendopay_bearer_token' );
+		return parent::process_admin_options();
+	}
 }
