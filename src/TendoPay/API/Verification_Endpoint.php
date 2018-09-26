@@ -61,7 +61,7 @@ class Verification_Endpoint {
             Constants::VENDOR_ID_PARAM          => (string) $gateway_options[ Gateway::OPTION_TENDOPAY_VENDOR_ID ],
             Constants::TRANSACTION_NO_PARAM     => (string) $tendo_pay_transaction_number,
             Constants::VERIFICATION_TOKEN_PARAM => $verification_token,
-            Constants::USER_ID_PARAM 		    => $tendo_pay_user_id,
+            Constants::USER_ID_PARAM            => $tendo_pay_user_id,
         ];
 
         $verification_data = apply_filters( 'tendopay_verification_data', $verification_data );
