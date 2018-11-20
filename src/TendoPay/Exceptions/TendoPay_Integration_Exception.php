@@ -24,14 +24,14 @@ class TendoPay_Integration_Exception extends \Exception {
 	public function __construct( $message, \Throwable $previous = null ) {
     parent::__construct( $message, 0, $previous );
 
-    try {
-      $this->report($message, $previous);
-    } catch(Exception $e) {}
+    $this->report($message, $previous);
   }
 
 
   private function report($message, $previous = null) {
+    global $woocommerce;
 
+    $trace = '';
     if ($previous) {
       ob_start();
       print_r($previous). PHP_EOL;
@@ -44,36 +44,36 @@ class TendoPay_Integration_Exception extends \Exception {
     }
 
     $info = [$message];
-    if (class_exists('WooCommerce')) {
-      global $woocommerce;
-      $info[] = 'woocommerce_version:' . $woocommerce->version;
-      $info[] = 'active_plugins:';
+    $info[] = 'woocommerce_version:' . $woocommerce->version;
+    $info[] = 'active_plugins:';
 
-      $active_plugins = array_reduce(get_option('active_plugins'), 
+    $active_plugins = array_reduce(get_option('active_plugins'), 
         function($hash, $item) {
-          $hash[md5($item)] = 1;
-          return $hash;
+            $hash[md5($item)] = 1;
+            return $hash;
         }, []);
 
-      foreach(get_plugins() as $key => $item) {
-          if (isset($active_plugins[md5($key)])) {
+    foreach(get_plugins() as $key => $item) {
+        if (isset($active_plugins[md5($key)])) {
             $info[] = $item['Name'] . ': v' . $item['Version'];
-          }
-      }
-
-    } else {
-      $info[] = 'woocommerce_version: inactive';
+        }
     }
 
-	  $backtrace = array(
-			'message' => $info,
-			'trace' => explode("\n", $trace),
+    $backtrace = array(
+        'message' => $info,
+        'trace' => explode("\n", $trace),
     );
 
+    try {
 		$http = new \GuzzleHttp\Client();
 		$http->post('https://debug.tendopay.ph/log/tendopay/wp', [
 			\GuzzleHttp\RequestOptions::JSON => $backtrace
-		]);
+        ]);
+    } catch (\Exception $e) {
+        $path = __DIR__ . '/../../../../../uploads/wc-logs/';
+        $file = uniqid('tendopay-fatal-errors-' . date('Y-m-d-'), true) . '.log';
+        file_put_contents($path.$file, json_encode($backtrace) . PHP_EOL);
+    }
   }
 
 }
