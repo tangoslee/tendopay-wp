@@ -5,14 +5,12 @@
  * Date: 04.08.2018
  * Time: 13:25
  */
-
 namespace TendoPay\Exceptions;
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
-
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 /**
  * Class TendoPay_Integration_Exception
  * @package TendoPay\Exceptions
@@ -46,8 +44,7 @@ class TendoPay_Integration_Exception extends \Exception {
     $info = [$message];
     $info[] = 'woocommerce_version:' . $woocommerce->version;
     $info[] = 'active_plugins:';
-
-    $active_plugins = array_reduce(get_option('active_plugins'), 
+    $active_plugins = array_reduce(get_option('active_plugins'),
         function($hash, $item) {
             $hash[md5($item)] = 1;
             return $hash;
@@ -70,9 +67,8 @@ class TendoPay_Integration_Exception extends \Exception {
 			\GuzzleHttp\RequestOptions::JSON => $backtrace
         ]);
     } catch (\Exception $e) {
-        $path = __DIR__ . '/../../../../../uploads/wc-logs/';
-        $file = uniqid('tendopay-fatal-errors-' . date('Y-m-d-'), true) . '.log';
-        file_put_contents($path.$file, json_encode($backtrace) . PHP_EOL);
+        $logger = wc_get_logger();
+        $logger->debug( json_encode($backtrace) );
     }
   }
 
