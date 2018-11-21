@@ -128,6 +128,11 @@ class TendoPay {
 		}
 
 		if ( $payment_completed ) {
+            global $woocommerce;
+            $woocommerce->cart->empty_cart();
+
+            wc_reduce_stock_levels( $order->get_id() );
+
 			$order->payment_complete();
 			wp_redirect( $order->get_checkout_order_received_url() );
 		} else {

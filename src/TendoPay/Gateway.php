@@ -197,11 +197,6 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
-		wc_reduce_stock_levels( $order->get_id() );
-
-		global $woocommerce;
-		$woocommerce->cart->empty_cart();
-
 		$redirect_args = urlencode_deep( $redirect_args );
 
 		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
