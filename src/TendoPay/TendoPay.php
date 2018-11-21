@@ -136,9 +136,7 @@ class TendoPay {
 			$order->payment_complete();
 			wp_redirect( $order->get_checkout_order_received_url() );
 		} else {
-			$checkout_payment_url = $order->get_checkout_payment_url();
-			$checkout_payment_url = add_query_arg( [ Constants::PAYMANET_FAILED_QUERY_PARAM => 1 ], $checkout_payment_url );
-			wp_redirect( $checkout_payment_url );
+			wp_redirect( wc_get_cart_url() );
 		}
 
 		exit;
