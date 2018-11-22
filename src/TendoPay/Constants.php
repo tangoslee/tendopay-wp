@@ -26,18 +26,18 @@ class Constants {
 
 	const HASH_ALGORITHM = 'sha256';
 
-	const BASE_API_URL = 'http://alpha.tendopay.ph';
-	const SANDBOX_BASE_API_URL = 'http://alpha.tendopay.ph';
+	const BASE_API_URL = 'https://app.tendopay.ph';
+	const SANDBOX_BASE_API_URL = 'https://app.tendopay.ph';
 
-	const REDIRECT_URI = 'http://alpha.tendopay.ph/payments/authorise';
-	const VIEW_URI_PATTERN = 'http://alpha.tendopay.ph/view/transaction/%s';
+	const REDIRECT_URI = 'https://app.tendopay.ph/payments/authorise';
+	const VIEW_URI_PATTERN = 'https://app.tendopay.ph/view/transaction/%s';
 	const VERIFICATION_ENDPOINT_URI = 'payments/api/v1/verification';
 	const AUTHORIZATION_ENDPOINT_URI = 'payments/api/v1/authTokenRequest';
 	const DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
 
-	const SANDBOX_REDIRECT_URI = 'http://alpha.tendopay.ph/payments/authorise';
-	const SANDBOX_VIEW_URI_PATTERN = 'http://alpha.tendopay.ph/view/transaction/%s';
+	const SANDBOX_REDIRECT_URI = 'https://app.tendopay.ph/payments/authorise';
+	const SANDBOX_VIEW_URI_PATTERN = 'https://app.tendopay.ph/view/transaction/%s';
 	const SANDBOX_VERIFICATION_ENDPOINT_URI = 'payments/api/v1/verification';
 	const SANDBOX_AUTHORIZATION_ENDPOINT_URI = 'payments/api/v1/authTokenRequest';
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
