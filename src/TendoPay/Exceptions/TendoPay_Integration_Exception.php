@@ -35,7 +35,8 @@ class TendoPay_Integration_Exception extends \Exception {
 			print_r($previous). PHP_EOL;
 			$raw = ob_get_contents();
 			ob_end_clean();
-
+			
+			
 			$trace = (preg_match('/\[string:Exception:private\] => ([^#]+)/s', $raw, $match))
 				? $match[1] . PHP_EOL . $previous->getTraceAsString()
 				: $previous->getTraceAsString();
@@ -58,18 +59,23 @@ class TendoPay_Integration_Exception extends \Exception {
 
 		$backtrace = array(
 			'message' => $info,
-			'trace' => explode("\n", $trace),
+			'trace'   => explode( "\n", $trace ),
 		);
 
-		try {
-			$http = new \GuzzleHttp\Client();
-			$http->post('https://debug.tendopay.ph/log/tendopay/wp', [
-				\GuzzleHttp\RequestOptions::JSON => $backtrace
-			]);
-		} catch (\Exception $e) {
-			$logger = wc_get_logger();
-			$logger->debug( json_encode($backtrace) );
-		}
+        self::sendReport($backtrace);
 	}
+
+    public static function sendReport($backtrace) {
+        try {
+            $http = new \GuzzleHttp\Client();
+            $http->post('https://debug.tendopay.ph/log/tendopay/wp', [
+                \GuzzleHttp\RequestOptions::JSON => $backtrace
+            ]);
+        } catch (\Exception $e) {
+            $logger = wc_get_logger();
+            $logger->debug( json_encode($backtrace) );
+        }
+    }
+
 
 }

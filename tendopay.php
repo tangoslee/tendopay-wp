@@ -11,6 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 use TendoPay\TendoPay;
 use TendoPay\Utils;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -30,6 +31,19 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	require_once "src/TendoPay/API/Endpoint_Caller.php";
 	require_once "src/TendoPay/API/Response.php";
 	require_once "src/TendoPay/API/Verification_Endpoint.php";
+
+	function tendopay_fatal_error() {
+		$error     = error_get_last();
+		$trace     = isset( $error['message'] ) ? $error['message'] : '';x
+		$backtrace = array(
+			'message' => 'Fatal Error',
+			'trace'   => explode( "\n", $trace ),
+		);
+		TendoPay_Integration_Exception::sendReport( $backtrace );
+	}
+
+	register_shutdown_function( 'tendopay_fatal_error' );
+
 
 	/**
 	 * The main function responsible for plugin's initialization.
