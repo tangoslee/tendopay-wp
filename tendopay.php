@@ -33,12 +33,21 @@ if ( ! defined( 'TENDOPAY' ) ) {
 	require_once "src/TendoPay/API/Verification_Endpoint.php";
 
 	function tendopay_fatal_error() {
-		$error     = error_get_last();
-		$trace     = isset( $error['message'] ) ? $error['message'] : '';x
-		$backtrace = array(
-			'message' => 'Fatal Error',
-			'trace'   => explode( "\n", $trace ),
-		);
+		$error = error_get_last();
+		$trace = [];
+		if ( is_array( $error ) ) {
+			foreach ( $error as $k => $v ) {
+				if ( $k == 'message' ) {
+					$trace = array_merge( $trace, explode( "\n", $v ) );
+				} else {
+					$trace[] = $k . ':' . $v;
+				}
+			}
+		}
+		if ( empty( $trace ) ) {
+			return;
+		}
+		$backtrace = TendoPay_Integration_Exception::getBackTrace('Fatal Error', $trace);
 		TendoPay_Integration_Exception::sendReport( $backtrace );
 	}
 
