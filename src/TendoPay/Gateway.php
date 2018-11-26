@@ -68,10 +68,22 @@ class Gateway extends WC_Payment_Gateway {
 
 	public function maybe_add_outstanding_balance_notice() {
 		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
-		if ( $error == 'outstanding_balance' ) {
-			$notice =
-				__( "Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
-					'tendopay' );
+		switch ( $error ) {
+			case 'outstanding_balance':
+				$notice =
+					__(
+						"Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
+						'tendopay'
+					);
+				break;
+			case 'minimum_purchase':
+				// TODO replace 1000 to contant
+				$notice = __( "There is a minimum purchase amount of 1000 PHP.", 'tendopay' );
+				break;
+			default:
+				$notice = '';
+		}
+		if ( $notice ) {
 			wc_print_notice( $notice, 'error' );
 		}
 	}
