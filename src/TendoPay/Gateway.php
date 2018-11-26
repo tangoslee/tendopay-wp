@@ -62,6 +62,18 @@ class Gateway extends WC_Payment_Gateway {
 			$this,
 			'process_admin_options'
 		) );
+
+		add_action( 'woocommerce_checkout_init', [ $this, 'maybe_add_outstanding_balance_notice' ] );
+	}
+
+	public function maybe_add_outstanding_balance_notice() {
+		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
+		if ( $error == 'outstanding_balance' ) {
+			$notice =
+				__( "Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
+					'tendopay' );
+			wc_print_notice( $notice, 'error' );
+		}
 	}
 
 	public function maybe_add_payment_failed_notice() {
@@ -80,7 +92,7 @@ class Gateway extends WC_Payment_Gateway {
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
 		if ( $payment_initiated ) {
-			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've aready initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to conitnue?", 'tendopay' );
+			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've already initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to continue?", 'tendopay' );
 
 			$notices = wc_get_notices();
 			if ( isset( $notices['notice'] ) && ! empty( $notices['notice'] ) ) {
@@ -163,6 +175,7 @@ class Gateway extends WC_Payment_Gateway {
 	 *         thrown by guzzle http client)
 	 */
 	public function process_payment( $order_id ) {
+		global $woocommerce;
 		$order = new WC_Order( (int) $order_id );
 
 		$auth_token = null;
@@ -197,6 +210,10 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
+		wc_reduce_stock_levels( $order->get_id() );
+
+		$woocommerce->cart->empty_cart();
+    
 		$redirect_args = urlencode_deep( $redirect_args );
 
 		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
@@ -205,6 +222,9 @@ class Gateway extends WC_Payment_Gateway {
 
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 		wc_clear_notices();
+
+		
+		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
 
 		return array(
 			'result'   => 'success',
