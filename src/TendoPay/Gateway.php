@@ -175,6 +175,7 @@ class Gateway extends WC_Payment_Gateway {
 	 *         thrown by guzzle http client)
 	 */
 	public function process_payment( $order_id ) {
+		global $woocommerce;
 		$order = new WC_Order( (int) $order_id );
 
 		$auth_token = null;
@@ -211,7 +212,6 @@ class Gateway extends WC_Payment_Gateway {
 
 		wc_reduce_stock_levels( $order->get_id() );
 
-		global $woocommerce;
 		$woocommerce->cart->empty_cart();
 
 		$redirect_args = urlencode_deep( $redirect_args );
@@ -223,7 +223,7 @@ class Gateway extends WC_Payment_Gateway {
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 		wc_clear_notices();
 
-		global $woocommerce;
+		
 		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
 
 		return array(
