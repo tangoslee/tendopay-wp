@@ -72,6 +72,7 @@ class TendoPay_Integration_Exception extends \Exception {
 
 	public static function getBackTrace( string $message, Array $trace = [] ) {
 		$backtrace = array(
+			'site' => get_site_url(),
 			'message' => self::getActivePlugins( $message ),
 			'trace'   => $trace,
 		);

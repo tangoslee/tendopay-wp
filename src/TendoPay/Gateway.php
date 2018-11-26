@@ -62,6 +62,18 @@ class Gateway extends WC_Payment_Gateway {
 			$this,
 			'process_admin_options'
 		) );
+
+		add_action( 'woocommerce_checkout_init', [ $this, 'maybe_add_outstanding_balance_notice' ] );
+	}
+
+	public function maybe_add_outstanding_balance_notice() {
+		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
+		if ( $error == 'outstanding_balance' ) {
+			$notice =
+				__( "Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
+					'tendopay' );
+			wc_print_notice( $notice, 'error' );
+		}
 	}
 
 	public function maybe_add_payment_failed_notice() {
@@ -163,6 +175,7 @@ class Gateway extends WC_Payment_Gateway {
 	 *         thrown by guzzle http client)
 	 */
 	public function process_payment( $order_id ) {
+		global $woocommerce;
 		$order = new WC_Order( (int) $order_id );
 
 		$auth_token = null;
@@ -199,7 +212,6 @@ class Gateway extends WC_Payment_Gateway {
 
 		wc_reduce_stock_levels( $order->get_id() );
 
-		global $woocommerce;
 		$woocommerce->cart->empty_cart();
 
 		$redirect_args = urlencode_deep( $redirect_args );
@@ -210,6 +222,9 @@ class Gateway extends WC_Payment_Gateway {
 
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 		wc_clear_notices();
+
+		
+		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
 
 		return array(
 			'result'   => 'success',
