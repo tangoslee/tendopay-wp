@@ -67,7 +67,13 @@ class Gateway extends WC_Payment_Gateway {
 	}
 
 	public function maybe_add_outstanding_balance_notice() {
-		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
+		$witherror = isset( $_GET['witherror'] ) ? $_GET['witherror'] : '';
+		$errors = explode(':', $witherror);
+		$errors = is_array($errors) ? array_map('htmlspecialchars', $errors) : [];
+		$error = isset($errors[0]) ? $errors[0] : '';
+		$extra = isset($errors[1]) ? $errors[1] : '';
+
+//		\error_log(__FILE__ . ' with error: ' . $witherror);
 		switch ( $error ) {
 			case 'outstanding_balance':
 				$notice =
@@ -75,16 +81,22 @@ class Gateway extends WC_Payment_Gateway {
 						"Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
 						'tendopay'
 					);
+				wc_print_notice( $notice, 'error' );
 				break;
 			case 'minimum_purchase':
-				// TODO replace 1000 to contant
-				$notice = __( "There is a minimum purchase amount of 1000 PHP.", 'tendopay' );
+				// TODO: check limit through api without return message.
+				$notice = __( $extra, 'tendopay' );
+				wc_add_notice( $notice, 'error' );
+				wp_redirect( wc_get_cart_url() );
+				break;
+			case 'maximum_purchase':
+				// TODO: check limit through api without return message.
+				$notice = __( $extra, 'tendopay' );
+				wc_add_notice( $notice, 'error' );
+				wp_redirect( wc_get_cart_url() );
 				break;
 			default:
-				$notice = '';
-		}
-		if ( $notice ) {
-			wc_print_notice( $notice, 'error' );
+				// do nothing
 		}
 	}
 
