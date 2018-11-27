@@ -74,8 +74,8 @@ class TendoPay {
 		add_action( 'plugins_loaded', array( $this, 'init_gateway' ) );
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
 		add_action( 'plugins_loaded', array( Redirect_Url_Rewriter::class, 'get_instance' ) );
-		add_action( 'admin_post_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
-		add_action( 'admin_post_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
+		add_action( 'wp_ajax_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
+		add_action( 'wp_ajax_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
 	}
 
 	/**
@@ -107,6 +107,37 @@ class TendoPay {
 				__( 'Wrong order key provided', 'tendopay' ), 403 );
 		}
 
+		if ( $this->is_awaiting_payment( $order ) ) {
+			$this->perform_verification( $order, $posted_data );
+		} else {
+			wp_redirect( $order->get_checkout_order_received_url() );
+		}
+
+		exit;
+	}
+
+	/**
+     * Checks if the order is awaiting payment.
+     *
+	 * @param \WC_Order $order the order to be checked for payment status
+	 *
+	 * @return bool true if the order is awaiting payment
+	 */
+	private function is_awaiting_payment( \WC_Order $order ) {
+		return $order->has_status( apply_filters( 'woocommerce_valid_order_statuses_for_payment_complete',
+			array( 'on-hold', 'pending', 'failed', 'cancelled' ), $order ) );
+	}
+
+	/**
+     *
+	 * Does the actual verification, updates the stocks and empties the cart.
+	 *
+	 * @param \WC_Order $order order to be verified
+	 * @param array $posted_data posted data
+	 *
+	 * @throws \GuzzleHttp\Exception\GuzzleException when there's a problem in communication with TendoPay API
+	 */
+	private function perform_verification( \WC_Order $order, $posted_data ) {
 		$gateway_options             = get_option( "woocommerce_" . Gateway::GATEWAY_ID . "_settings" );
 		$tendo_pay_merchant_id       = $posted_data[ Constants::VENDOR_ID_PARAM ];
 		$local_tendo_pay_merchant_id = $gateway_options[ Gateway::OPTION_TENDOPAY_VENDOR_ID ];
@@ -117,8 +148,8 @@ class TendoPay {
 		}
 
 		try {
-			$verification      = new Verification_Endpoint();
-			$payment_completed = $verification->verify_payment( $order, $posted_data );
+			$verification         = new Verification_Endpoint();
+			$transaction_verified = $verification->verify_payment( $order, $posted_data );
 		} catch ( \Exception $exception ) {
 			error_log( $exception->getMessage() );
 			error_log( $exception->getTraceAsString() );
@@ -127,13 +158,16 @@ class TendoPay {
 				__( 'Could not communicate with TendoPay properly', 'tendopay' ), 403 );
 		}
 
-		if ( $payment_completed ) {
+		if ( $transaction_verified ) {
+			global $woocommerce;
+			$woocommerce->cart->empty_cart();
+
+			wc_reduce_stock_levels( $order->get_id() );
+
 			$order->payment_complete();
 			wp_redirect( $order->get_checkout_order_received_url() );
 		} else {
-			$checkout_payment_url = $order->get_checkout_payment_url();
-			$checkout_payment_url = add_query_arg( [ Constants::PAYMANET_FAILED_QUERY_PARAM => 1 ], $checkout_payment_url );
-			wp_redirect( $checkout_payment_url );
+			wp_redirect( wc_get_cart_url() );
 		}
 
 		exit;
