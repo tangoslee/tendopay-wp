@@ -73,7 +73,6 @@ class Gateway extends WC_Payment_Gateway {
 		$error     = isset( $errors[0] ) ? $errors[0] : '';
 		$extra     = isset( $errors[1] ) ? $errors[1] : '';
 
-//		\error_log(__FILE__ . ' with error: ' . $witherror);
 		switch ( $error ) {
 			case 'outstanding_balance':
 				$notice =
