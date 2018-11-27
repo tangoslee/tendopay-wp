@@ -49,21 +49,33 @@ class Gateway extends WC_Payment_Gateway {
 
 		$this->title             = $this->get_option( self::OPTION_METHOD_TITLE );
 		$this->method_title      = $this->get_option( self::OPTION_METHOD_TITLE );
+		$this->icon              = apply_filters( 'woocommerce_gateway_icon', 'https://placekitten.com/64/64' );
 		$this->description       = $this->get_option( self::OPTION_METHOD_DESC );
 		$this->order_button_text = apply_filters( 'tendopay_order_button_text',
 			__( 'Buy now, pay later with TendoPay', 'tendopay' ) );
+
 
 		$this->maybe_add_payment_initiated_notice();
 		add_action( 'before_woocommerce_pay', [ $this, 'maybe_add_payment_failed_notice' ] );
 
 		$this->view_transaction_url = Constants::get_view_uri_pattern();
 
-		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array(
+		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [
 			$this,
 			'process_admin_options'
-		) );
+		] );
 
 		add_action( 'woocommerce_checkout_init', [ $this, 'maybe_add_outstanding_balance_notice' ] );
+	}
+
+	public function get_logo_tendopay() {
+		$icon_logo = 'https://placekitten.com/64/64';
+		$icon_html = sprintf( '<img src="%1$s" alt="%2$s"/>', esc_attr( $icon_logo ), esc_attr__(
+			'TendoPay acceptance mark', 'woocommerce' ) );
+
+		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( 'https://tendopay.ph/page-faq.html' ) );
+
+		return apply_filters( 'woocommerce_gateway_icon', $icon_html );
 	}
 
 	public function maybe_add_outstanding_balance_notice() {
@@ -110,55 +122,55 @@ class Gateway extends WC_Payment_Gateway {
 	 * Prepares settings forms for plugin's settings page.
 	 */
 	public function init_form_fields() {
-		$this->form_fields = array(
-			self::OPTION_ENABLED                  => array(
+		$this->form_fields = [
+			self::OPTION_ENABLED                  => [
 				'title'   => __( 'Enable/Disable', 'tendopay' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable TendoPay Integration', 'tendopay' ),
 				'default' => 'yes'
-			),
-			self::OPTION_METHOD_TITLE             => array(
+			],
+			self::OPTION_METHOD_TITLE             => [
 				'title'       => __( 'Payment gateway title', 'tendopay' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'tendopay' ),
 				'default'     => __( 'Pay with TendoPay', 'tendopay' ),
 				'desc_tip'    => true,
-			),
-			self::OPTION_METHOD_DESC              => array(
+			],
+			self::OPTION_METHOD_DESC              => [
 				'title'       => __( 'Payment method description', 'tendopay' ),
 				'description' => __( 'Additional information displayed to the customer after selecting TendoPay method', 'tendopay' ),
 				'type'        => 'textarea',
 				'default'     => '',
 				'desc_tip'    => true,
-			),
-			self::OPTION_TENDOPAY_SANDBOX_ENABLED => array(
+			],
+			self::OPTION_TENDOPAY_SANDBOX_ENABLED => [
 				'title'       => __( 'Enable SANDBOX', 'tendopay' ),
 				'description' => __( 'Enable SANDBOX if you want to test integration with TendoPay without real transactions.', 'tendopay' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
-			),
-			self::OPTION_TENDOPAY_VENDOR_ID       => array(
+			],
+			self::OPTION_TENDOPAY_VENDOR_ID       => [
 				'title'   => __( 'Tendo Pay Merchant ID', 'tendopay' ),
 				'type'    => 'text',
 				'default' => ''
-			),
-			self::OPTION_TENDOPAY_SECRET          => array(
+			],
+			self::OPTION_TENDOPAY_SECRET          => [
 				'title'   => __( 'Secret', 'tendopay' ),
 				'type'    => 'password',
 				'default' => ''
-			),
-			self::OPTION_TENDOPAY_CLIENT_ID       => array(
+			],
+			self::OPTION_TENDOPAY_CLIENT_ID       => [
 				'title'   => __( 'API Client ID', 'tendopay' ),
 				'type'    => 'text',
 				'default' => ''
-			),
-			self::OPTION_TENDOPAY_CLIENT_SECRET   => array(
+			],
+			self::OPTION_TENDOPAY_CLIENT_SECRET   => [
 				'title'   => __( 'API Client Secret', 'tendopay' ),
 				'type'    => 'password',
 				'default' => ''
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -223,13 +235,13 @@ class Gateway extends WC_Payment_Gateway {
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 		wc_clear_notices();
 
-		
+
 		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
 
-		return array(
+		return [
 			'result'   => 'success',
 			'redirect' => $redirect_url
-		);
+		];
 	}
 
 	/**
@@ -241,6 +253,7 @@ class Gateway extends WC_Payment_Gateway {
 	 */
 	public function process_admin_options() {
 		delete_option( 'tendopay_bearer_token' );
+
 		return parent::process_admin_options();
 	}
 }
