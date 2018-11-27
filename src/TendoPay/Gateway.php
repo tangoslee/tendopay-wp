@@ -84,11 +84,6 @@ class Gateway extends WC_Payment_Gateway {
 				wc_print_notice( $notice, 'error' );
 				break;
 			case 'minimum_purchase':
-				// TODO: check limit through api without return message.
-				$notice = __( $extra, 'tendopay' );
-				wc_add_notice( $notice, 'error' );
-				wp_redirect( wc_get_cart_url() );
-				break;
 			case 'maximum_purchase':
 				// TODO: check limit through api without return message.
 				$notice = __( $extra, 'tendopay' );
