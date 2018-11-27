@@ -12,8 +12,8 @@ use TendoPay\API\Authorization_Endpoint;
 use TendoPay\API\Description_Endpoint;
 use TendoPay\API\Hash_Calculator;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
-use \WC_Payment_Gateway;
-use \WC_Order;
+use WC_Order;
+use WC_Payment_Gateway;
 
 /**
  * This class implements the woocommerce gateway mechanism.
@@ -68,10 +68,10 @@ class Gateway extends WC_Payment_Gateway {
 
 	public function maybe_add_outstanding_balance_notice() {
 		$witherror = isset( $_GET['witherror'] ) ? $_GET['witherror'] : '';
-		$errors = explode(':', $witherror);
-		$errors = is_array($errors) ? array_map('htmlspecialchars', $errors) : [];
-		$error = isset($errors[0]) ? $errors[0] : '';
-		$extra = isset($errors[1]) ? $errors[1] : '';
+		$errors    = explode( ':', $witherror );
+		$errors    = is_array( $errors ) ? array_map( 'htmlspecialchars', $errors ) : [];
+		$error     = isset( $errors[0] ) ? $errors[0] : '';
+		$extra     = isset( $errors[1] ) ? $errors[1] : '';
 
 //		\error_log(__FILE__ . ' with error: ' . $witherror);
 		switch ( $error ) {
