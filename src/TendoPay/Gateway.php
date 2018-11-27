@@ -87,9 +87,7 @@ class Gateway extends WC_Payment_Gateway {
 				$notice = __( $extra, 'tendopay' );
 				wc_add_notice( $notice, 'error' );
 				wp_redirect( wc_get_cart_url() );
-				break;
-			default:
-				// do nothing
+				die;
 		}
 	}
 
