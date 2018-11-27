@@ -49,11 +49,7 @@ class Redirect_Url_Rewriter {
 	 * @return string url for redirection from TendoPay
 	 */
 	public function get_redirect_url() {
-		if ( is_writeable( ABSPATH . '.htaccess' ) ) {
-			return get_site_url( get_current_blog_id(), 'tendopay-result' );
-		} else {
-			return admin_url( 'admin-post.php?action=tendopay-result' );
-		}
+		return admin_url( 'admin-ajax.php?action=tendopay-result' );
 	}
 
 	/**
@@ -62,10 +58,7 @@ class Redirect_Url_Rewriter {
 	 * Adds rewrite rules to handle custom link.
 	 */
 	public function add_rules() {
-		$url = substr( admin_url( 'admin-post.php?action=tendopay-result' ), strlen( site_url() ) + 1 );
-		$url = apply_filters( 'tendopay_action_url', $url );
-
-		$redirect_url_pattern = apply_filters( 'tendopay_redirect_url_pattern', Constants::REDIRECT_URL_PATTERN );
-		add_rewrite_rule( $redirect_url_pattern, $url, 'top' );
+		// removed due to weird problems
+		// todo possibly remove the whole class
 	}
 }
