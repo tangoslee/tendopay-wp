@@ -12,8 +12,8 @@ use TendoPay\API\Authorization_Endpoint;
 use TendoPay\API\Description_Endpoint;
 use TendoPay\API\Hash_Calculator;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
-use \WC_Payment_Gateway;
-use \WC_Order;
+use WC_Order;
+use WC_Payment_Gateway;
 
 /**
  * This class implements the woocommerce gateway mechanism.
@@ -72,19 +72,35 @@ class Gateway extends WC_Payment_Gateway {
 			'TendoPay acceptance mark', 'woocommerce' ) );
 
 		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(
-   			\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); 
+   			\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'
+   			); 
    			return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( Constants::TENDOPAY_FAQ ) );
 
 		return apply_filters( 'woocommerce_gateway_icon', $icon_html, $this->id );
 	}
 
 	public function maybe_add_outstanding_balance_notice() {
-		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
-		if ( $error == 'outstanding_balance' ) {
-			$notice =
-				__( "Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
-					'tendopay' );
-			wc_print_notice( $notice, 'error' );
+		$witherror = isset( $_GET['witherror'] ) ? $_GET['witherror'] : '';
+		$errors    = explode( ':', $witherror );
+		$errors    = is_array( $errors ) ? array_map( 'htmlspecialchars', $errors ) : [];
+		$error     = isset( $errors[0] ) ? $errors[0] : '';
+		$extra     = isset( $errors[1] ) ? $errors[1] : '';
+
+		switch ( $error ) {
+			case 'outstanding_balance':
+				$notice =
+					__(
+						"Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
+						'tendopay'
+					);
+				wc_print_notice( $notice, 'error' );
+				break;
+			case 'minimum_purchase':
+			case 'maximum_purchase':
+				$notice = __( $extra, 'tendopay' );
+				wc_add_notice( $notice, 'error' );
+				wp_redirect( wc_get_cart_url() );
+				die;
 		}
 	}
 
