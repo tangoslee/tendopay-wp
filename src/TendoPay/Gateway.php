@@ -47,8 +47,7 @@ class Gateway extends WC_Payment_Gateway {
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title = $this->get_option( self::OPTION_METHOD_TITLE );
-		//$this->title             = $this->get_option( self::OPTION_METHOD_TITLE ) . $this->get_logo_tendopay();
+		$this->title             = $this->get_option( self::OPTION_METHOD_TITLE );
 		$this->method_title      = $this->get_option( self::OPTION_METHOD_TITLE );
 		$this->icon              = apply_filters( 'woocommerce_gateway_icon', 'https://placekitten.com/64/64' );
 		$this->description       = $this->get_option( self::OPTION_METHOD_DESC );
@@ -69,34 +68,22 @@ class Gateway extends WC_Payment_Gateway {
 		add_action( 'woocommerce_checkout_init', [ $this, 'maybe_add_outstanding_balance_notice' ] );
 	}
 
-	public function get_logo_tendopay() {
+	public function get_icon() {
 		$icon_logo = 'https://placekitten.com/64/64';
 		$icon_html = sprintf( '<img src="%1$s" alt="%2$s"/>', esc_attr( $icon_logo ), esc_attr__(
 			'TendoPay acceptance mark', 'woocommerce' ) );
 
 		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( 'https://tendopay.ph/page-faq.html' ) );
 
-		return apply_filters( 'woocommerce_gateway_icon', $icon_html );
+		return apply_filters( 'woocommerce_gateway_icon', $icon_html, $this->id );
 	}
 
 	public function maybe_add_outstanding_balance_notice() {
 		$error = isset( $_GET['witherror'] ) ? htmlspecialchars( $_GET['witherror'] ) : '';
-		switch ( $error ) {
-			case 'outstanding_balance':
-				$notice =
-					__(
-						"Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
-						'tendopay'
-					);
-				break;
-			case 'minimum_purchase':
-				// TODO replace 1000 to contant
-				$notice = __( "There is a minimum purchase amount of 1000 PHP.", 'tendopay' );
-				break;
-			default:
-				$notice = '';
-		}
-		if ( $notice ) {
+		if ( $error == 'outstanding_balance' ) {
+			$notice =
+				__( "Your account has an outstanding balance, please repay your payment so you make an additional purchase.",
+					'tendopay' );
 			wc_print_notice( $notice, 'error' );
 		}
 	}
@@ -117,8 +104,7 @@ class Gateway extends WC_Payment_Gateway {
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
 		if ( $payment_initiated ) {
-			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've already initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to continue?",
-				'tendopay' );
+			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've already initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to continue?", 'tendopay' );
 
 			$notices = wc_get_notices();
 			if ( isset( $notices['notice'] ) && ! empty( $notices['notice'] ) ) {
@@ -152,16 +138,14 @@ class Gateway extends WC_Payment_Gateway {
 			],
 			self::OPTION_METHOD_DESC              => [
 				'title'       => __( 'Payment method description', 'tendopay' ),
-				'description' => __( 'Additional information displayed to the customer after selecting TendoPay method',
-					'tendopay' ),
+				'description' => __( 'Additional information displayed to the customer after selecting TendoPay method', 'tendopay' ),
 				'type'        => 'textarea',
 				'default'     => '',
 				'desc_tip'    => true,
 			],
 			self::OPTION_TENDOPAY_SANDBOX_ENABLED => [
 				'title'       => __( 'Enable SANDBOX', 'tendopay' ),
-				'description' => __( 'Enable SANDBOX if you want to test integration with TendoPay without real transactions.',
-					'tendopay' ),
+				'description' => __( 'Enable SANDBOX if you want to test integration with TendoPay without real transactions.', 'tendopay' ),
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -238,6 +222,10 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
+		wc_reduce_stock_levels( $order->get_id() );
+
+		$woocommerce->cart->empty_cart();
+
 		$redirect_args = urlencode_deep( $redirect_args );
 
 		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
@@ -248,7 +236,7 @@ class Gateway extends WC_Payment_Gateway {
 		wc_clear_notices();
 
 
-		$redirect_url .= '&er=' . urlencode( wc_get_checkout_url() );
+		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
 
 		return [
 			'result'   => 'success',
