@@ -49,7 +49,6 @@ class Gateway extends WC_Payment_Gateway {
 
 		$this->title             = $this->get_option( self::OPTION_METHOD_TITLE );
 		$this->method_title      = $this->get_option( self::OPTION_METHOD_TITLE );
-		$this->icon              = apply_filters( 'woocommerce_gateway_icon', 'https://placekitten.com/64/64' );
 		$this->description       = $this->get_option( self::OPTION_METHOD_DESC );
 		$this->order_button_text = apply_filters( 'tendopay_order_button_text',
 			__( 'Buy now, pay later with TendoPay', 'tendopay' ) );
@@ -69,11 +68,12 @@ class Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$icon_logo = 'https://placekitten.com/64/64';
-		$icon_html = sprintf( '<img src="%1$s" alt="%2$s"/>', esc_attr( $icon_logo ), esc_attr__(
+		$icon_html = sprintf( '<img src="%1$s" alt="%2$s"/>', esc_attr( Constants::TENDOPAY_ICON ), esc_attr__(
 			'TendoPay acceptance mark', 'woocommerce' ) );
 
-		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( 'https://tendopay.ph/page-faq.html' ) );
+		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(
+   			\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); 
+   			return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( Constants::TENDOPAY_FAQ ) );
 
 		return apply_filters( 'woocommerce_gateway_icon', $icon_html, $this->id );
 	}

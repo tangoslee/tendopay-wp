@@ -43,6 +43,9 @@ class Constants {
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const SANDBOX_BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
 
+	const TENDOPAY_ICON = 'https://placekitten.com/64/64';
+	const TENDOPAY_FAQ = 'https://tendopay.ph/page-faq.html';
+
 	/**
 	 * Below constant names are used as keys of data send to or received from TP API
 	 */
