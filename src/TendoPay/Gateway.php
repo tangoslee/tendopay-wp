@@ -120,9 +120,9 @@ class Gateway extends WC_Payment_Gateway {
 		$payment_initiated = get_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 
 		if ( $payment_initiated ) {
-			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've already initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to continue?", 'tendopay' );
-
-			$notices = wc_get_notices();
+			$payment_initiated_notice = __( "<strong>Warning!</strong><br><br>You've already initiated payment attempt with TendoPay once. If you continue you may end up finalizing two separate payments for single order.<br><br>Are you sure you want to continue?",
+				'tendopay' );
+			$notices                  = wc_get_notices();
 			if ( isset( $notices['notice'] ) && ! empty( $notices['notice'] ) ) {
 				$payment_initiated_notice .= "<br><br>";
 			} else {
@@ -238,10 +238,6 @@ class Gateway extends WC_Payment_Gateway {
 		$redirect_args = apply_filters( 'tendopay_process_payment_redirect_args_after_hash', $redirect_args, $order,
 			$this, $auth_token );
 
-		wc_reduce_stock_levels( $order->get_id() );
-
-		$woocommerce->cart->empty_cart();
-
 		$redirect_args = urlencode_deep( $redirect_args );
 
 		$redirect_url = add_query_arg( $redirect_args, Constants::get_redirect_uri() );
@@ -250,9 +246,7 @@ class Gateway extends WC_Payment_Gateway {
 
 		update_post_meta( $order_id, self::TENDOPAY_PAYMENT_INITIATED_KEY, true );
 		wc_clear_notices();
-
-
-		$redirect_url .= '&er=' . urlencode( $woocommerce->cart->get_checkout_url() );
+		$redirect_url .= '&er=' . urlencode( wc_get_checkout_url() );
 
 		return [
 			'result'   => 'success',
