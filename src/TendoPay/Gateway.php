@@ -68,13 +68,10 @@ class Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$icon_html = sprintf( '<img src="%1$s" alt="%2$s"/>', esc_attr( Constants::TENDOPAY_ICON ), esc_attr__(
-			'TendoPay acceptance mark', 'woocommerce' ) );
+		$icon_html = '<img src="' . esc_attr( Constants::TENDOPAY_ICON ) . '" alt="' . esc_attr__( 'TendoPay acceptance mark', 'woocommerce' ) . '" />';
 
-		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" onclick="javascript:window.open(
-   			\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'
-   			); 
-   			return false;">' . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( Constants::TENDOPAY_FAQ ) );
+		$icon_html .= sprintf( ' <a href="%1$s" class="about_tendopay" style="float:right;" onclick="javascript:window.open(\'%1$s\',\'WITendoPay\',\'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700\'); return false;">'
+		                       . esc_attr__( 'What is TendoPay?', 'woocommerce' ) . '</a>', esc_url( Constants::TENDOPAY_FAQ ) );
 
 		return apply_filters( 'woocommerce_gateway_icon', $icon_html, $this->id );
 	}
