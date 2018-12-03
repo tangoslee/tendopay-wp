@@ -43,7 +43,7 @@ class Constants {
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const SANDBOX_BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
 
-	const TENDOPAY_ICON = 'https://s3.ca-central-1.amazonaws.com/candydigital/images/tendopay/tp-icon-128x128.png';
+	const TENDOPAY_ICON = 'https://s3.ca-central-1.amazonaws.com/candydigital/images/tendopay/tp-icon-32x32.png';
 	const TENDOPAY_FAQ = 'https://tendopay.ph/page-faq.html';
 
 	/**
