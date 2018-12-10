@@ -66,7 +66,7 @@ class Endpoint_Caller {
 		$this->hash_calculator      = new Hash_Calculator( $this->secret );
 
 		$this->client = new Client( [
-			'base_uri' => Constants::BASE_API_URL
+			'base_uri' => Constants::get_base_api_url()
 		] );
 	}
 
