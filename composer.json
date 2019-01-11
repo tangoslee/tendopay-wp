@@ -3,5 +3,10 @@
   "description": "TendoPay Wordpres Plugin",
   "require": {
     "guzzlehttp/guzzle": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TendoPay\\": "src/TendoPay"
+    }
   }
 }

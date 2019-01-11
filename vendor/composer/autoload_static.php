@@ -13,6 +13,10 @@ class ComposerStaticInit58d5cb8e86fa321e6738c16af886af83
     );
 
     public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'TendoPay\\' => 9,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
@@ -26,6 +30,10 @@ class ComposerStaticInit58d5cb8e86fa321e6738c16af886af83
     );
 
     public static $prefixDirsPsr4 = array (
+        'TendoPay\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/TendoPay',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',

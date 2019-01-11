@@ -11,6 +11,7 @@ namespace TendoPay;
 
 use TendoPay\API\Order_Status_Transition_Endpoint;
 use TendoPay\API\Verification_Endpoint;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use \WC_Order_Factory;
 
 /**
