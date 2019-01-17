@@ -34,7 +34,7 @@ class Order_Status_Transition_Endpoint {
 	 * Order_Status_Transition_Endpoint constructor.
 	 */
 	public function __construct() {
-		$this->logger = Logger_Factory::create_logger("status transition");
+		$this->logger = Logger_Factory::create_logger( "status transition" );
 	}
 
 	/**
@@ -74,8 +74,11 @@ class Order_Status_Transition_Endpoint {
 
 		try {
 			$response = $endpoint_caller->do_call( Constants::get_order_status_transition_endpoint_uri(), $data );
+			$this->logger->debug( "Got response from TP" );
+			$this->logger->debug( $response->get_body() );
 		} catch ( BadResponseException $exception ) {
-			$this->logger->error( $exception->getResponse()->getBody() );
+			$this->logger->error( json_encode( json_decode( $exception->getResponse()->getBody() ),
+				JSON_PRETTY_PRINT ) );
 			$this->logger->error( $exception->getTraceAsString() );
 			throw new TendoPay_Integration_Exception(
 				__( "Received error from TendoPay API while trying to notify about status transition",
