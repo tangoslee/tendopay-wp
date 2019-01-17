@@ -27,7 +27,7 @@ class Constants {
 	const HASH_ALGORITHM = 'sha256';
 
 	const BASE_API_URL = 'https://app.tendopay.ph';
-	const SANDBOX_BASE_API_URL = 'https://sandbox.tendopay.ph';
+	const SANDBOX_BASE_API_URL = 'http://sangmin.cd-http.com/';
 
 	const REDIRECT_URI = 'https://app.tendopay.ph/payments/authorise';
 	const VIEW_URI_PATTERN = 'https://app.tendopay.ph/view/transaction/%s';
@@ -35,15 +35,15 @@ class Constants {
 	const AUTHORIZATION_ENDPOINT_URI = 'payments/api/v1/authTokenRequest';
 	const DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
-	const ORDER_STATUS_TRANSITION_ENDPOINT_URL = "api/v1/orderUpdate";
+	const ORDER_STATUS_TRANSITION_ENDPOINT_URL = "payments/api/v1/orderUpdate";
 
-	const SANDBOX_REDIRECT_URI = 'https://sandbox.tendopay.ph/payments/authorise';
-	const SANDBOX_VIEW_URI_PATTERN = 'https://sandbox.tendopay.ph/view/transaction/%s';
+	const SANDBOX_REDIRECT_URI = 'http://sangmin.cd-http.com/payments/authorise';
+	const SANDBOX_VIEW_URI_PATTERN = 'http://sangmin.cd-http.com/view/transaction/%s';
 	const SANDBOX_VERIFICATION_ENDPOINT_URI = 'payments/api/v1/verification';
 	const SANDBOX_AUTHORIZATION_ENDPOINT_URI = 'payments/api/v1/authTokenRequest';
 	const SANDBOX_DESCRIPTION_ENDPOINT_URI = 'payments/api/v1/paymentDescription';
 	const SANDBOX_BEARER_TOKEN_ENDPOINT_URI = 'oauth/token';
-	const SANDBOX_ORDER_STATUS_TRANSITION_ENDPOINT_URL = "api/v1/orderUpdate";
+	const SANDBOX_ORDER_STATUS_TRANSITION_ENDPOINT_URL = "payments/api/v1/orderUpdate";
 
 	const TENDOPAY_ICON = 'https://s3.ca-central-1.amazonaws.com/candydigital/images/tendopay/tp-icon-32x32.png';
 	const TENDOPAY_FAQ = 'https://tendopay.ph/page-faq.html';
@@ -97,6 +97,8 @@ class Constants {
 	const SHIPPING_ORDER_PROPNAME = 'shipping';
 	const SUBTOTAL_ORDER_PROPNAME = 'subtotal';
 	const TOTAL_ORDER_PROPNAME = 'total';
+
+	const WP_UPLOAD_LOGGER_PATH = "/logs/";
 
 	/**
 	 * Gets the hash algorithm.

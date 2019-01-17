@@ -114,7 +114,7 @@ class TendoPay {
 			}
 
 			$order_status_transition = new Order_Status_Transition_Endpoint();
-			$order_status_transition->notify( $order, $last_disposition_data, $update_data );
+            $order_status_transition->notify( $order, $last_disposition_data, $update_data );
 		}
 	}
 
