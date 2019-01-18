@@ -87,6 +87,8 @@ class TendoPay {
 	/**
 	 * @hook woocommerce_order_status_changed 10
 	 *
+	 * For transactions completed with TendoPay, this method will notify about any status transition that occurs in WC.
+	 *
 	 * @param $order_id
 	 * @param $status_from
 	 * @param $status_to
@@ -114,7 +116,7 @@ class TendoPay {
 			}
 
 			$order_status_transition = new Order_Status_Transition_Endpoint();
-            $order_status_transition->notify( $order, $last_disposition_data, $update_data );
+			$order_status_transition->notify( $order, $last_disposition_data, $update_data );
 		}
 	}
 

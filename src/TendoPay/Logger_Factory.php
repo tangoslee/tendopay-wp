@@ -12,6 +12,13 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 class Logger_Factory {
+	/**
+	 * Creates logger for TendoPay plugin in uploads/logs directory.
+	 *
+	 * @param string $channel_name name of the logging channel
+	 *
+	 * @return Logger
+	 */
 	public static function create_logger( $channel_name ) {
 		$log = new Logger( $channel_name );
 		try {

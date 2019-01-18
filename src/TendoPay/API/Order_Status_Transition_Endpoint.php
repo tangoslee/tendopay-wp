@@ -10,7 +10,6 @@ namespace TendoPay\API;
 
 
 use GuzzleHttp\Exception\BadResponseException;
-use InvalidArgumentException;
 use Monolog\Logger;
 use TendoPay\Constants;
 use TendoPay\Exceptions\TendoPay_Integration_Exception;
