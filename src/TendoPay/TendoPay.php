@@ -9,7 +9,9 @@
 
 namespace TendoPay;
 
+use TendoPay\API\Order_Status_Transition_Endpoint;
 use TendoPay\API\Verification_Endpoint;
+use TendoPay\Exceptions\TendoPay_Integration_Exception;
 use \WC_Order_Factory;
 
 /**
@@ -17,6 +19,9 @@ use \WC_Order_Factory;
  * @package TendoPay
  */
 class TendoPay {
+	const COMPLETED_AT_KEY = "_tendopay_completed_at";
+	const LAST_DISPOSITION_KEY = "_tendopay_last_disposition";
+
 	/**
 	 * @var TendoPay $instance the only instance of this class
 	 */
@@ -71,11 +76,48 @@ class TendoPay {
 	 * - handing redirect with disposition from TendoPay after the transaction is completed
 	 */
 	public function register_hooks() {
-		add_action( 'plugins_loaded', array( $this, 'init_gateway' ) );
-		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
-		add_action( 'plugins_loaded', array( Redirect_Url_Rewriter::class, 'get_instance' ) );
-		add_action( 'wp_ajax_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
-		add_action( 'wp_ajax_nopriv_tendopay-result', array( $this, 'handle_redirect_from_tendopay' ) );
+		add_action( 'plugins_loaded', [ $this, 'init_gateway' ] );
+		add_filter( 'woocommerce_payment_gateways', [ $this, 'register_gateway' ] );
+		add_action( 'plugins_loaded', [ Redirect_Url_Rewriter::class, 'get_instance' ] );
+		add_action( 'wp_ajax_tendopay-result', [ $this, 'handle_redirect_from_tendopay' ] );
+		add_action( 'wp_ajax_nopriv_tendopay-result', [ $this, 'handle_redirect_from_tendopay' ] );
+		add_action( "woocommerce_order_status_changed", [ $this, "handle_order_status_transition" ], 10, 4 );
+	}
+
+	/**
+	 * @hook woocommerce_order_status_changed 10
+	 *
+	 * For transactions completed with TendoPay, this method will notify about any status transition that occurs in WC.
+	 *
+	 * @param $order_id
+	 * @param $status_from
+	 * @param $status_to
+	 * @param \WC_Order $order
+	 *
+	 * @throws Exceptions\TendoPay_Integration_Exception
+	 * @throws \GuzzleHttp\Exception\GuzzleException
+	 */
+	public function handle_order_status_transition( $order_id, $status_from, $status_to, \WC_Order $order ) {
+		$previously_completed_at = get_post_meta( $order_id, self::COMPLETED_AT_KEY, true );
+		if ( $previously_completed_at ) {
+			$current_datetime = new \DateTime();
+			$update_data      = [
+				"order_id"         => $order_id,
+				"order_key"        => $order->get_order_key(),
+				"order_placed_at"  => $previously_completed_at,
+				"from"             => $status_from,
+				"to"               => $status_to,
+				"order_updated_at" => $current_datetime->format( \DateTime::ISO8601 ),
+			];
+
+			$last_disposition_data = get_post_meta( $order_id, self::LAST_DISPOSITION_KEY, true );
+			if ( ! $last_disposition_data ) {
+				throw new TendoPay_Integration_Exception( __( "No saved disposition found.", "tendopay" ) );
+			}
+
+			$order_status_transition = new Order_Status_Transition_Endpoint();
+			$order_status_transition->notify( $order, $last_disposition_data, $update_data );
+		}
 	}
 
 	/**
@@ -117,19 +159,19 @@ class TendoPay {
 	}
 
 	/**
-     * Checks if the order is awaiting payment.
-     *
+	 * Checks if the order is awaiting payment.
+	 *
 	 * @param \WC_Order $order the order to be checked for payment status
 	 *
 	 * @return bool true if the order is awaiting payment
 	 */
 	private function is_awaiting_payment( \WC_Order $order ) {
 		return $order->has_status( apply_filters( 'woocommerce_valid_order_statuses_for_payment_complete',
-			array( 'on-hold', 'pending', 'failed', 'cancelled' ), $order ) );
+			[ 'on-hold', 'pending', 'failed', 'cancelled' ], $order ) );
 	}
 
 	/**
-     *
+	 *
 	 * Does the actual verification, updates the stocks and empties the cart.
 	 *
 	 * @param \WC_Order $order order to be verified
@@ -148,6 +190,7 @@ class TendoPay {
 		}
 
 		try {
+			update_post_meta( $order->get_id(), self::LAST_DISPOSITION_KEY, $posted_data );
 			$verification         = new Verification_Endpoint();
 			$transaction_verified = $verification->verify_payment( $order, $posted_data );
 		} catch ( \Exception $exception ) {
@@ -163,6 +206,10 @@ class TendoPay {
 			$woocommerce->cart->empty_cart();
 
 			wc_reduce_stock_levels( $order->get_id() );
+
+			$current_datetime = new \DateTime();
+			update_post_meta( $order->get_id(), self::COMPLETED_AT_KEY,
+				$current_datetime->format( \DateTime::ISO8601 ) );
 
 			$order->payment_complete();
 			wp_redirect( $order->get_checkout_order_received_url() );

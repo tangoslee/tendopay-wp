@@ -2,6 +2,12 @@
   "name": "TendoPay Wordpres Plugin",
   "description": "TendoPay Wordpres Plugin",
   "require": {
-    "guzzlehttp/guzzle": "~6.0"
+    "guzzlehttp/guzzle": "~6.0",
+    "monolog/monolog": "^1.24"
+  },
+  "autoload": {
+    "psr-4": {
+      "TendoPay\\": "src/TendoPay"
+    }
   }
 }
