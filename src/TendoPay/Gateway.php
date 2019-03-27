@@ -146,7 +146,7 @@ class Gateway extends WC_Payment_Gateway {
 				'title'       => __( 'Payment gateway title', 'tendopay' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'tendopay' ),
-				'default'     => __( 'Pay with TendoPay', 'tendopay' ),
+				'default'     => __( 'Installments by TendoPay', 'tendopay' ),
 				'desc_tip'    => true,
 			],
 			self::OPTION_METHOD_DESC              => [
